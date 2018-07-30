@@ -229,13 +229,13 @@ paths:
                   - regression
                   - automated
                 properties_array:
-                  properties:
-                    property:
-                      name: OS
+                  - properties:
+                    - name: OS
                       value: Linux
+                    - name: java.vm.vendor
+                      value: Oracle Corporation
                 testcases:
-                  testcase:
-                    name: RegressionTestCase
+                  - name: RegressionTestCase
                     time: 438.84
                     classname: com.example.regression.Test
     post:
@@ -270,13 +270,13 @@ paths:
                   - regression
                   - automated
                 properties_array:
-                  properties:
-                    property:
-                      name: OS
+                  - properties:
+                    - name: OS
                       value: Linux
+                    - name: java.vm.vendor
+                      value: Oracle Corporation
                 testcases:
-                  testcase:
-                    name: RegressionTestCase
+                  - name: RegressionTestCase
                     time: 438.84
                     classname: com.example.regression.Test
   /testsuites/{id}:
@@ -308,13 +308,13 @@ paths:
                   - regression
                   - automated
                 properties_array:
-                  properties:
-                    property:
-                      name: OS
+                  - properties:
+                    - name: OS
                       value: Linux
+                    - name: java.vm.vendor
+                      value: Oracle Corporation
                 testcases:
-                  testcase:
-                    name: RegressionTestCase
+                  - name: RegressionTestCase
                     time: 438.84
                     classname: com.example.regression.Test
     put:
@@ -350,13 +350,13 @@ paths:
                   - regression
                   - automated
                 properties_array:
-                  properties:
-                    property:
-                      name: OS
+                  - properties:
+                    - name: OS
                       value: Linux
+                    - name: java.vm.vendor
+                      value: Oracle Corporation
                 testcases:
-                  testcase:
-                    name: RegressionTestCase
+                  - name: RegressionTestCase
                     time: 438.84
                     classname: com.example.regression.Test
     delete:
@@ -446,10 +446,12 @@ definitions:
           type: string
       project_id:
         type: string
+      # xml field is 'properties'
       properties_array:
         type: array
         items:
           $ref: '#/definitions/Properties' 
+      # xml field is 'testcase'
       testcases:
         type: array
         items:
@@ -475,13 +477,13 @@ definitions:
         - regression
         - automated
       properties_array:
-        properties:
-          property:
-            name: OS
+        - properties:
+          - name: OS
             value: Linux
+          - name: java.vm.vendor
+            value: Oracle Corporation
       testcases:
-        testcase:
-          name: RegressionTestCase
+        - name: RegressionTestCase
           time: 438.84
           classname: com.example.regression.Test
   TestCase:
@@ -545,6 +547,7 @@ definitions:
     title: Property
     type: object
     properties:
+      # xml field is 'property'
       properties:
         type: array
         items:
