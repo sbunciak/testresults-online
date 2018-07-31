@@ -1,4 +1,4 @@
-package io.swagger.configuration;
+package eu.testresults.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

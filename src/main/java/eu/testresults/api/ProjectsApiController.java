@@ -1,7 +1,8 @@
-package io.swagger.api;
+package eu.testresults.api;
 
-import io.swagger.model.Project;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import eu.testresults.model.Project;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

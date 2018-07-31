@@ -1,65 +1,58 @@
-package io.swagger.model;
+package eu.testresults.model;
 
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import eu.testresults.model.Property;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.validation.annotation.Validated;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 
 /**
- * Skipped
+ * Properties
  */
 @Validated
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2018-07-30T21:24:04.222Z")
 
-public class Skipped   {
-  @JsonProperty("message")
-  private String message = null;
+public class Properties   {
+  @JsonProperty("properties")
+  @Valid
+  private List<Property> properties = null;
 
-  @JsonProperty("content")
-  private String content = null;
+  public Properties properties(List<Property> properties) {
+    this.properties = properties;
+    return this;
+  }
 
-  public Skipped message(String message) {
-    this.message = message;
+  public Properties addPropertiesItem(Property propertiesItem) {
+    if (this.properties == null) {
+      this.properties = new ArrayList<Property>();
+    }
+    this.properties.add(propertiesItem);
     return this;
   }
 
   /**
-   * Get message
-   * @return message
+   * Get properties
+   * @return properties
   **/
   @ApiModelProperty(value = "")
 
+  @Valid
 
-  public String getMessage() {
-    return message;
+  public List<Property> getProperties() {
+    return properties;
   }
 
-  public void setMessage(String message) {
-    this.message = message;
-  }
-
-  public Skipped content(String content) {
-    this.content = content;
-    return this;
-  }
-
-  /**
-   * Get content
-   * @return content
-  **/
-  @ApiModelProperty(value = "")
-
-
-  public String getContent() {
-    return content;
-  }
-
-  public void setContent(String content) {
-    this.content = content;
+  public void setProperties(List<Property> properties) {
+    this.properties = properties;
   }
 
 
@@ -71,23 +64,21 @@ public class Skipped   {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    Skipped skipped = (Skipped) o;
-    return Objects.equals(this.message, skipped.message) &&
-        Objects.equals(this.content, skipped.content);
+    Properties properties = (Properties) o;
+    return Objects.equals(this.properties, properties.properties);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(message, content);
+    return Objects.hash(properties);
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class Skipped {\n");
+    sb.append("class Properties {\n");
     
-    sb.append("    message: ").append(toIndentedString(message)).append("\n");
-    sb.append("    content: ").append(toIndentedString(content)).append("\n");
+    sb.append("    properties: ").append(toIndentedString(properties)).append("\n");
     sb.append("}");
     return sb.toString();
   }

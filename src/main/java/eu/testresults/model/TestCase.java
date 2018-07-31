@@ -1,13 +1,16 @@
-package io.swagger.model;
+package eu.testresults.model;
 
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import eu.testresults.model.Error;
+import eu.testresults.model.Failure;
+import eu.testresults.model.Skipped;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import io.swagger.model.Error;
-import io.swagger.model.Failure;
-import io.swagger.model.Skipped;
+
 import java.math.BigDecimal;
 import org.springframework.validation.annotation.Validated;
 import javax.validation.Valid;

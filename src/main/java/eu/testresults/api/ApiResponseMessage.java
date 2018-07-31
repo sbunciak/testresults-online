@@ -1,4 +1,4 @@
-package io.swagger.api;
+package eu.testresults.api;
 
 import javax.xml.bind.annotation.XmlTransient;
 

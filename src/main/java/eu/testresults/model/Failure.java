@@ -1,31 +1,35 @@
-package io.swagger.model;
+package eu.testresults.model;
 
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.math.BigDecimal;
 import org.springframework.validation.annotation.Validated;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 
 /**
- * Error
+ * Failure
  */
 @Validated
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2018-07-30T21:24:04.222Z")
 
-public class Error   {
+public class Failure   {
   @JsonProperty("message")
   private String message = null;
 
   @JsonProperty("content")
   private String content = null;
 
+  @JsonProperty("time")
+  private BigDecimal time = null;
+
   @JsonProperty("type")
   private String type = null;
 
-  public Error message(String message) {
+  public Failure message(String message) {
     this.message = message;
     return this;
   }
@@ -45,7 +49,7 @@ public class Error   {
     this.message = message;
   }
 
-  public Error content(String content) {
+  public Failure content(String content) {
     this.content = content;
     return this;
   }
@@ -65,7 +69,28 @@ public class Error   {
     this.content = content;
   }
 
-  public Error type(String type) {
+  public Failure time(BigDecimal time) {
+    this.time = time;
+    return this;
+  }
+
+  /**
+   * Get time
+   * @return time
+  **/
+  @ApiModelProperty(value = "")
+
+  @Valid
+
+  public BigDecimal getTime() {
+    return time;
+  }
+
+  public void setTime(BigDecimal time) {
+    this.time = time;
+  }
+
+  public Failure type(String type) {
     this.type = type;
     return this;
   }
@@ -94,24 +119,26 @@ public class Error   {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    Error error = (Error) o;
-    return Objects.equals(this.message, error.message) &&
-        Objects.equals(this.content, error.content) &&
-        Objects.equals(this.type, error.type);
+    Failure failure = (Failure) o;
+    return Objects.equals(this.message, failure.message) &&
+        Objects.equals(this.content, failure.content) &&
+        Objects.equals(this.time, failure.time) &&
+        Objects.equals(this.type, failure.type);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(message, content, type);
+    return Objects.hash(message, content, time, type);
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class Error {\n");
+    sb.append("class Failure {\n");
     
     sb.append("    message: ").append(toIndentedString(message)).append("\n");
     sb.append("    content: ").append(toIndentedString(content)).append("\n");
+    sb.append("    time: ").append(toIndentedString(time)).append("\n");
     sb.append("    type: ").append(toIndentedString(type)).append("\n");
     sb.append("}");
     return sb.toString();

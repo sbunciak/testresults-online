@@ -1,35 +1,28 @@
-package io.swagger.model;
+package eu.testresults.model;
 
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.math.BigDecimal;
 import org.springframework.validation.annotation.Validated;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 
 /**
- * Failure
+ * Skipped
  */
 @Validated
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2018-07-30T21:24:04.222Z")
 
-public class Failure   {
+public class Skipped   {
   @JsonProperty("message")
   private String message = null;
 
   @JsonProperty("content")
   private String content = null;
 
-  @JsonProperty("time")
-  private BigDecimal time = null;
-
-  @JsonProperty("type")
-  private String type = null;
-
-  public Failure message(String message) {
+  public Skipped message(String message) {
     this.message = message;
     return this;
   }
@@ -49,7 +42,7 @@ public class Failure   {
     this.message = message;
   }
 
-  public Failure content(String content) {
+  public Skipped content(String content) {
     this.content = content;
     return this;
   }
@@ -69,47 +62,6 @@ public class Failure   {
     this.content = content;
   }
 
-  public Failure time(BigDecimal time) {
-    this.time = time;
-    return this;
-  }
-
-  /**
-   * Get time
-   * @return time
-  **/
-  @ApiModelProperty(value = "")
-
-  @Valid
-
-  public BigDecimal getTime() {
-    return time;
-  }
-
-  public void setTime(BigDecimal time) {
-    this.time = time;
-  }
-
-  public Failure type(String type) {
-    this.type = type;
-    return this;
-  }
-
-  /**
-   * Get type
-   * @return type
-  **/
-  @ApiModelProperty(value = "")
-
-
-  public String getType() {
-    return type;
-  }
-
-  public void setType(String type) {
-    this.type = type;
-  }
-
 
   @Override
   public boolean equals(java.lang.Object o) {
@@ -119,27 +71,23 @@ public class Failure   {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    Failure failure = (Failure) o;
-    return Objects.equals(this.message, failure.message) &&
-        Objects.equals(this.content, failure.content) &&
-        Objects.equals(this.time, failure.time) &&
-        Objects.equals(this.type, failure.type);
+    Skipped skipped = (Skipped) o;
+    return Objects.equals(this.message, skipped.message) &&
+        Objects.equals(this.content, skipped.content);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(message, content, time, type);
+    return Objects.hash(message, content);
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class Failure {\n");
+    sb.append("class Skipped {\n");
     
     sb.append("    message: ").append(toIndentedString(message)).append("\n");
     sb.append("    content: ").append(toIndentedString(content)).append("\n");
-    sb.append("    time: ").append(toIndentedString(time)).append("\n");
-    sb.append("    type: ").append(toIndentedString(type)).append("\n");
     sb.append("}");
     return sb.toString();
   }
