@@ -1,28 +1,24 @@
 package eu.testresults.model;
 
+import java.math.BigDecimal;
 import java.util.Objects;
+
+import javax.annotation.Generated;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+
+import org.springframework.validation.annotation.Validated;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import eu.testresults.model.Error;
-import eu.testresults.model.Failure;
-import eu.testresults.model.Skipped;
-
-import com.fasterxml.jackson.annotation.JsonCreator;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-
-import java.math.BigDecimal;
-import org.springframework.validation.annotation.Validated;
-import javax.validation.Valid;
-import javax.validation.constraints.*;
 
 /**
  * TestCase
  */
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2018-07-30T21:24:04.222Z")
-
-public class TestCase   {
+@Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2018-07-30T21:24:04.222Z")
+public class TestCase {
   @JsonProperty("name")
   private String name = null;
 
@@ -60,12 +56,11 @@ public class TestCase   {
 
   /**
    * Get name
+   * 
    * @return name
-  **/
+   **/
   @ApiModelProperty(required = true, value = "")
   @NotNull
-
-
   public String getName() {
     return name;
   }
@@ -81,11 +76,10 @@ public class TestCase   {
 
   /**
    * Get classname
+   * 
    * @return classname
-  **/
+   **/
   @ApiModelProperty(value = "")
-
-
   public String getClassname() {
     return classname;
   }
@@ -101,11 +95,10 @@ public class TestCase   {
 
   /**
    * Get group
+   * 
    * @return group
-  **/
+   **/
   @ApiModelProperty(value = "")
-
-
   public String getGroup() {
     return group;
   }
@@ -121,13 +114,12 @@ public class TestCase   {
 
   /**
    * Get time
+   * 
    * @return time
-  **/
+   **/
   @ApiModelProperty(required = true, value = "")
   @NotNull
-
   @Valid
-
   public BigDecimal getTime() {
     return time;
   }
@@ -143,11 +135,10 @@ public class TestCase   {
 
   /**
    * Get systemOut
+   * 
    * @return systemOut
-  **/
+   **/
   @ApiModelProperty(value = "")
-
-
   public String getSystemOut() {
     return systemOut;
   }
@@ -163,11 +154,10 @@ public class TestCase   {
 
   /**
    * Get systemErr
+   * 
    * @return systemErr
-  **/
+   **/
   @ApiModelProperty(value = "")
-
-
   public String getSystemErr() {
     return systemErr;
   }
@@ -183,12 +173,11 @@ public class TestCase   {
 
   /**
    * Get failure
+   * 
    * @return failure
-  **/
+   **/
   @ApiModelProperty(value = "")
-
   @Valid
-
   public Failure getFailure() {
     return failure;
   }
@@ -204,12 +193,11 @@ public class TestCase   {
 
   /**
    * Get rerunFailure
+   * 
    * @return rerunFailure
-  **/
+   **/
   @ApiModelProperty(value = "")
-
   @Valid
-
   public Failure getRerunFailure() {
     return rerunFailure;
   }
@@ -225,12 +213,11 @@ public class TestCase   {
 
   /**
    * Get skipped
+   * 
    * @return skipped
-  **/
+   **/
   @ApiModelProperty(value = "")
-
   @Valid
-
   public Skipped getSkipped() {
     return skipped;
   }
@@ -246,12 +233,11 @@ public class TestCase   {
 
   /**
    * Get error
+   * 
    * @return error
-  **/
+   **/
   @ApiModelProperty(value = "")
-
   @Valid
-
   public Error getError() {
     return error;
   }
@@ -259,7 +245,6 @@ public class TestCase   {
   public void setError(Error error) {
     this.error = error;
   }
-
 
   @Override
   public boolean equals(java.lang.Object o) {
@@ -270,16 +255,10 @@ public class TestCase   {
       return false;
     }
     TestCase testCase = (TestCase) o;
-    return Objects.equals(this.name, testCase.name) &&
-        Objects.equals(this.classname, testCase.classname) &&
-        Objects.equals(this.group, testCase.group) &&
-        Objects.equals(this.time, testCase.time) &&
-        Objects.equals(this.systemOut, testCase.systemOut) &&
-        Objects.equals(this.systemErr, testCase.systemErr) &&
-        Objects.equals(this.failure, testCase.failure) &&
-        Objects.equals(this.rerunFailure, testCase.rerunFailure) &&
-        Objects.equals(this.skipped, testCase.skipped) &&
-        Objects.equals(this.error, testCase.error);
+    return Objects.equals(this.name, testCase.name) && Objects.equals(this.classname, testCase.classname) && Objects.equals(this.group, testCase.group)
+        && Objects.equals(this.time, testCase.time) && Objects.equals(this.systemOut, testCase.systemOut) && Objects.equals(this.systemErr, testCase.systemErr)
+        && Objects.equals(this.failure, testCase.failure) && Objects.equals(this.rerunFailure, testCase.rerunFailure) && Objects.equals(this.skipped, testCase.skipped)
+        && Objects.equals(this.error, testCase.error);
   }
 
   @Override
@@ -291,7 +270,7 @@ public class TestCase   {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class TestCase {\n");
-    
+
     sb.append("    name: ").append(toIndentedString(name)).append("\n");
     sb.append("    classname: ").append(toIndentedString(classname)).append("\n");
     sb.append("    group: ").append(toIndentedString(group)).append("\n");
@@ -317,4 +296,3 @@ public class TestCase   {
     return o.toString().replace("\n", "\n    ");
   }
 }
-

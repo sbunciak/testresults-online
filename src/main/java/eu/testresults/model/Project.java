@@ -1,21 +1,22 @@
 package eu.testresults.model;
 
 import java.util.Objects;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+
+import javax.annotation.Generated;
+import javax.validation.constraints.NotNull;
+
 import org.springframework.validation.annotation.Validated;
-import javax.validation.Valid;
-import javax.validation.constraints.*;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * Project
  */
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2018-07-30T21:24:04.222Z")
-
-public class Project   {
+@Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2018-07-30T21:24:04.222Z")
+public class Project {
   @JsonProperty("name")
   private String name = null;
 
@@ -29,12 +30,11 @@ public class Project   {
 
   /**
    * Get name
+   * 
    * @return name
-  **/
+   **/
   @ApiModelProperty(required = true, value = "")
   @NotNull
-
-
   public String getName() {
     return name;
   }
@@ -50,11 +50,10 @@ public class Project   {
 
   /**
    * Get desc
+   * 
    * @return desc
-  **/
+   **/
   @ApiModelProperty(value = "")
-
-
   public String getDesc() {
     return desc;
   }
@@ -62,7 +61,6 @@ public class Project   {
   public void setDesc(String desc) {
     this.desc = desc;
   }
-
 
   @Override
   public boolean equals(java.lang.Object o) {
@@ -73,8 +71,7 @@ public class Project   {
       return false;
     }
     Project project = (Project) o;
-    return Objects.equals(this.name, project.name) &&
-        Objects.equals(this.desc, project.desc);
+    return Objects.equals(this.name, project.name) && Objects.equals(this.desc, project.desc);
   }
 
   @Override
@@ -86,7 +83,7 @@ public class Project   {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Project {\n");
-    
+
     sb.append("    name: ").append(toIndentedString(name)).append("\n");
     sb.append("    desc: ").append(toIndentedString(desc)).append("\n");
     sb.append("}");
@@ -104,4 +101,3 @@ public class Project   {
     return o.toString().replace("\n", "\n    ");
   }
 }
-

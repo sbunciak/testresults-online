@@ -1,22 +1,23 @@
 package eu.testresults.model;
 
-import java.util.Objects;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import java.math.BigDecimal;
-import org.springframework.validation.annotation.Validated;
+import java.util.Objects;
+
+import javax.annotation.Generated;
 import javax.validation.Valid;
-import javax.validation.constraints.*;
+
+import org.springframework.validation.annotation.Validated;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * Failure
  */
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2018-07-30T21:24:04.222Z")
-
-public class Failure   {
+@Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2018-07-30T21:24:04.222Z")
+public class Failure {
   @JsonProperty("message")
   private String message = null;
 
@@ -36,11 +37,10 @@ public class Failure   {
 
   /**
    * Get message
+   * 
    * @return message
-  **/
+   **/
   @ApiModelProperty(value = "")
-
-
   public String getMessage() {
     return message;
   }
@@ -56,11 +56,10 @@ public class Failure   {
 
   /**
    * Get content
+   * 
    * @return content
-  **/
+   **/
   @ApiModelProperty(value = "")
-
-
   public String getContent() {
     return content;
   }
@@ -76,12 +75,11 @@ public class Failure   {
 
   /**
    * Get time
+   * 
    * @return time
-  **/
+   **/
   @ApiModelProperty(value = "")
-
   @Valid
-
   public BigDecimal getTime() {
     return time;
   }
@@ -97,11 +95,10 @@ public class Failure   {
 
   /**
    * Get type
+   * 
    * @return type
-  **/
+   **/
   @ApiModelProperty(value = "")
-
-
   public String getType() {
     return type;
   }
@@ -109,7 +106,6 @@ public class Failure   {
   public void setType(String type) {
     this.type = type;
   }
-
 
   @Override
   public boolean equals(java.lang.Object o) {
@@ -120,10 +116,8 @@ public class Failure   {
       return false;
     }
     Failure failure = (Failure) o;
-    return Objects.equals(this.message, failure.message) &&
-        Objects.equals(this.content, failure.content) &&
-        Objects.equals(this.time, failure.time) &&
-        Objects.equals(this.type, failure.type);
+    return Objects.equals(this.message, failure.message) && Objects.equals(this.content, failure.content) && Objects.equals(this.time, failure.time)
+        && Objects.equals(this.type, failure.type);
   }
 
   @Override
@@ -135,7 +129,7 @@ public class Failure   {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Failure {\n");
-    
+
     sb.append("    message: ").append(toIndentedString(message)).append("\n");
     sb.append("    content: ").append(toIndentedString(content)).append("\n");
     sb.append("    time: ").append(toIndentedString(time)).append("\n");
@@ -155,4 +149,3 @@ public class Failure   {
     return o.toString().replace("\n", "\n    ");
   }
 }
-

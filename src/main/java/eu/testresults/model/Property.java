@@ -1,21 +1,22 @@
 package eu.testresults.model;
 
 import java.util.Objects;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+
+import javax.annotation.Generated;
+import javax.validation.constraints.NotNull;
+
 import org.springframework.validation.annotation.Validated;
-import javax.validation.Valid;
-import javax.validation.constraints.*;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * Property
  */
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2018-07-30T21:24:04.222Z")
-
-public class Property   {
+@Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2018-07-30T21:24:04.222Z")
+public class Property {
   @JsonProperty("name")
   private String name = null;
 
@@ -29,12 +30,11 @@ public class Property   {
 
   /**
    * Get name
+   * 
    * @return name
-  **/
+   **/
   @ApiModelProperty(required = true, value = "")
   @NotNull
-
-
   public String getName() {
     return name;
   }
@@ -50,12 +50,11 @@ public class Property   {
 
   /**
    * Get value
+   * 
    * @return value
-  **/
+   **/
   @ApiModelProperty(required = true, value = "")
   @NotNull
-
-
   public String getValue() {
     return value;
   }
@@ -63,7 +62,6 @@ public class Property   {
   public void setValue(String value) {
     this.value = value;
   }
-
 
   @Override
   public boolean equals(java.lang.Object o) {
@@ -74,8 +72,7 @@ public class Property   {
       return false;
     }
     Property property = (Property) o;
-    return Objects.equals(this.name, property.name) &&
-        Objects.equals(this.value, property.value);
+    return Objects.equals(this.name, property.name) && Objects.equals(this.value, property.value);
   }
 
   @Override
@@ -87,7 +84,7 @@ public class Property   {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Property {\n");
-    
+
     sb.append("    name: ").append(toIndentedString(name)).append("\n");
     sb.append("    value: ").append(toIndentedString(value)).append("\n");
     sb.append("}");
@@ -105,4 +102,3 @@ public class Property   {
     return o.toString().replace("\n", "\n    ");
   }
 }
-

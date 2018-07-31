@@ -1,27 +1,25 @@
 package eu.testresults.model;
 
-import java.util.Objects;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import eu.testresults.model.ProjectRole;
-
-import com.fasterxml.jackson.annotation.JsonCreator;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.validation.annotation.Validated;
+import java.util.Objects;
+
+import javax.annotation.Generated;
 import javax.validation.Valid;
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotNull;
+
+import org.springframework.validation.annotation.Validated;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * User
  */
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2018-07-30T21:24:04.222Z")
-
-public class User   {
+@Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2018-07-30T21:24:04.222Z")
+public class User {
   @JsonProperty("name")
   private String name = null;
 
@@ -39,12 +37,11 @@ public class User   {
 
   /**
    * Get name
+   * 
    * @return name
-  **/
+   **/
   @ApiModelProperty(required = true, value = "")
   @NotNull
-
-
   public String getName() {
     return name;
   }
@@ -60,12 +57,11 @@ public class User   {
 
   /**
    * Get email
+   * 
    * @return email
-  **/
+   **/
   @ApiModelProperty(required = true, value = "")
   @NotNull
-
-
   public String getEmail() {
     return email;
   }
@@ -89,12 +85,11 @@ public class User   {
 
   /**
    * Get projectRoles
+   * 
    * @return projectRoles
-  **/
+   **/
   @ApiModelProperty(value = "")
-
   @Valid
-
   public List<ProjectRole> getProjectRoles() {
     return projectRoles;
   }
@@ -102,7 +97,6 @@ public class User   {
   public void setProjectRoles(List<ProjectRole> projectRoles) {
     this.projectRoles = projectRoles;
   }
-
 
   @Override
   public boolean equals(java.lang.Object o) {
@@ -113,9 +107,7 @@ public class User   {
       return false;
     }
     User user = (User) o;
-    return Objects.equals(this.name, user.name) &&
-        Objects.equals(this.email, user.email) &&
-        Objects.equals(this.projectRoles, user.projectRoles);
+    return Objects.equals(this.name, user.name) && Objects.equals(this.email, user.email) && Objects.equals(this.projectRoles, user.projectRoles);
   }
 
   @Override
@@ -127,7 +119,7 @@ public class User   {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class User {\n");
-    
+
     sb.append("    name: ").append(toIndentedString(name)).append("\n");
     sb.append("    email: ").append(toIndentedString(email)).append("\n");
     sb.append("    projectRoles: ").append(toIndentedString(projectRoles)).append("\n");
@@ -146,4 +138,3 @@ public class User   {
     return o.toString().replace("\n", "\n    ");
   }
 }
-

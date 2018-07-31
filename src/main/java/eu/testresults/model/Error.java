@@ -1,21 +1,21 @@
 package eu.testresults.model;
 
 import java.util.Objects;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+
+import javax.annotation.Generated;
+
 import org.springframework.validation.annotation.Validated;
-import javax.validation.Valid;
-import javax.validation.constraints.*;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * Error
  */
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2018-07-30T21:24:04.222Z")
-
-public class Error   {
+@Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2018-07-30T21:24:04.222Z")
+public class Error {
   @JsonProperty("message")
   private String message = null;
 
@@ -32,11 +32,10 @@ public class Error   {
 
   /**
    * Get message
+   * 
    * @return message
-  **/
+   **/
   @ApiModelProperty(value = "")
-
-
   public String getMessage() {
     return message;
   }
@@ -52,11 +51,10 @@ public class Error   {
 
   /**
    * Get content
+   * 
    * @return content
-  **/
+   **/
   @ApiModelProperty(value = "")
-
-
   public String getContent() {
     return content;
   }
@@ -72,11 +70,10 @@ public class Error   {
 
   /**
    * Get type
+   * 
    * @return type
-  **/
+   **/
   @ApiModelProperty(value = "")
-
-
   public String getType() {
     return type;
   }
@@ -84,7 +81,6 @@ public class Error   {
   public void setType(String type) {
     this.type = type;
   }
-
 
   @Override
   public boolean equals(java.lang.Object o) {
@@ -95,9 +91,7 @@ public class Error   {
       return false;
     }
     Error error = (Error) o;
-    return Objects.equals(this.message, error.message) &&
-        Objects.equals(this.content, error.content) &&
-        Objects.equals(this.type, error.type);
+    return Objects.equals(this.message, error.message) && Objects.equals(this.content, error.content) && Objects.equals(this.type, error.type);
   }
 
   @Override
@@ -109,7 +103,7 @@ public class Error   {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Error {\n");
-    
+
     sb.append("    message: ").append(toIndentedString(message)).append("\n");
     sb.append("    content: ").append(toIndentedString(content)).append("\n");
     sb.append("    type: ").append(toIndentedString(type)).append("\n");
@@ -128,4 +122,3 @@ public class Error   {
     return o.toString().replace("\n", "\n    ");
   }
 }
-

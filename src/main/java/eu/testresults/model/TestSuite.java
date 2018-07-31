@@ -1,28 +1,25 @@
 package eu.testresults.model;
 
-import java.util.Objects;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import eu.testresults.model.Properties;
-import eu.testresults.model.TestCase;
-
-import com.fasterxml.jackson.annotation.JsonCreator;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.validation.annotation.Validated;
+import java.util.Objects;
+
+import javax.annotation.Generated;
 import javax.validation.Valid;
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotNull;
+
+import org.springframework.validation.annotation.Validated;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * TestSuite
  */
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2018-07-30T21:24:04.222Z")
-
+@Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2018-07-30T21:24:04.222Z")
 public class TestSuite   {
   @JsonProperty("name")
   private String name = null;
@@ -71,8 +68,6 @@ public class TestSuite   {
   **/
   @ApiModelProperty(required = true, value = "")
   @NotNull
-
-
   public String getName() {
     return name;
   }
@@ -91,8 +86,6 @@ public class TestSuite   {
    * @return group
   **/
   @ApiModelProperty(value = "")
-
-
   public String getGroup() {
     return group;
   }
@@ -112,8 +105,6 @@ public class TestSuite   {
   **/
   @ApiModelProperty(required = true, value = "")
   @NotNull
-
-
   public Integer getTests() {
     return tests;
   }
@@ -133,8 +124,6 @@ public class TestSuite   {
   **/
   @ApiModelProperty(required = true, value = "")
   @NotNull
-
-
   public Integer getFailures() {
     return failures;
   }
@@ -154,8 +143,6 @@ public class TestSuite   {
   **/
   @ApiModelProperty(required = true, value = "")
   @NotNull
-
-
   public Integer getErrors() {
     return errors;
   }
@@ -175,8 +162,6 @@ public class TestSuite   {
   **/
   @ApiModelProperty(required = true, value = "")
   @NotNull
-
-
   public Integer getSkipped() {
     return skipped;
   }
@@ -196,9 +181,7 @@ public class TestSuite   {
   **/
   @ApiModelProperty(required = true, value = "")
   @NotNull
-
   @Valid
-
   public BigDecimal getTime() {
     return time;
   }
@@ -225,8 +208,6 @@ public class TestSuite   {
    * @return labels
   **/
   @ApiModelProperty(value = "")
-
-
   public List<String> getLabels() {
     return labels;
   }
@@ -246,8 +227,6 @@ public class TestSuite   {
   **/
   @ApiModelProperty(required = true, value = "")
   @NotNull
-
-
   public String getProjectId() {
     return projectId;
   }
@@ -274,9 +253,7 @@ public class TestSuite   {
    * @return propertiesArray
   **/
   @ApiModelProperty(value = "")
-
   @Valid
-
   public List<Properties> getPropertiesArray() {
     return propertiesArray;
   }
@@ -303,9 +280,7 @@ public class TestSuite   {
    * @return testcases
   **/
   @ApiModelProperty(value = "")
-
   @Valid
-
   public List<TestCase> getTestcases() {
     return testcases;
   }
@@ -373,4 +348,3 @@ public class TestSuite   {
     return o.toString().replace("\n", "\n    ");
   }
 }
-

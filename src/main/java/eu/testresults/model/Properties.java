@@ -1,27 +1,25 @@
 package eu.testresults.model;
 
-import java.util.Objects;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import eu.testresults.model.Property;
-
-import com.fasterxml.jackson.annotation.JsonCreator;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.validation.annotation.Validated;
+import java.util.Objects;
+
+import javax.annotation.Generated;
 import javax.validation.Valid;
-import javax.validation.constraints.*;
+
+import org.springframework.validation.annotation.Validated;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * Properties
  */
 @Validated
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2018-07-30T21:24:04.222Z")
+@Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2018-07-30T21:24:04.222Z")
 
-public class Properties   {
+public class Properties {
   @JsonProperty("properties")
   @Valid
   private List<Property> properties = null;
@@ -41,12 +39,11 @@ public class Properties   {
 
   /**
    * Get properties
+   * 
    * @return properties
-  **/
+   **/
   @ApiModelProperty(value = "")
-
   @Valid
-
   public List<Property> getProperties() {
     return properties;
   }
@@ -54,7 +51,6 @@ public class Properties   {
   public void setProperties(List<Property> properties) {
     this.properties = properties;
   }
-
 
   @Override
   public boolean equals(java.lang.Object o) {
@@ -77,7 +73,7 @@ public class Properties   {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Properties {\n");
-    
+
     sb.append("    properties: ").append(toIndentedString(properties)).append("\n");
     sb.append("}");
     return sb.toString();
@@ -94,4 +90,3 @@ public class Properties   {
     return o.toString().replace("\n", "\n    ");
   }
 }
-
