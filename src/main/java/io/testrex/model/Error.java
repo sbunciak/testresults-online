@@ -1,4 +1,4 @@
-package eu.testresults.model;
+package io.testrex.model;
 
 import java.util.Objects;
 
@@ -8,31 +8,26 @@ import org.springframework.validation.annotation.Validated;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import io.swagger.annotations.ApiModelProperty;
-
 /**
- * Skipped
+ * Error
  */
 @Validated
 @Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2018-07-30T21:24:04.222Z")
-public class Skipped {
+public class Error {
   @JsonProperty("message")
   private String message = null;
 
   @JsonProperty("content")
   private String content = null;
 
-  public Skipped message(String message) {
+  @JsonProperty("type")
+  private String type = null;
+
+  public Error message(String message) {
     this.message = message;
     return this;
   }
 
-  /**
-   * Get message
-   * 
-   * @return message
-   **/
-  @ApiModelProperty(value = "")
   public String getMessage() {
     return message;
   }
@@ -41,23 +36,30 @@ public class Skipped {
     this.message = message;
   }
 
-  public Skipped content(String content) {
+  public Error content(String content) {
     this.content = content;
     return this;
   }
 
-  /**
-   * Get content
-   * 
-   * @return content
-   **/
-  @ApiModelProperty(value = "")
   public String getContent() {
     return content;
   }
 
   public void setContent(String content) {
     this.content = content;
+  }
+
+  public Error type(String type) {
+    this.type = type;
+    return this;
+  }
+
+  public String getType() {
+    return type;
+  }
+
+  public void setType(String type) {
+    this.type = type;
   }
 
   @Override
@@ -68,22 +70,23 @@ public class Skipped {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    Skipped skipped = (Skipped) o;
-    return Objects.equals(this.message, skipped.message) && Objects.equals(this.content, skipped.content);
+    Error error = (Error) o;
+    return Objects.equals(this.message, error.message) && Objects.equals(this.content, error.content) && Objects.equals(this.type, error.type);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(message, content);
+    return Objects.hash(message, content, type);
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class Skipped {\n");
+    sb.append("class Error {\n");
 
     sb.append("    message: ").append(toIndentedString(message)).append("\n");
     sb.append("    content: ").append(toIndentedString(content)).append("\n");
+    sb.append("    type: ").append(toIndentedString(type)).append("\n");
     sb.append("}");
     return sb.toString();
   }

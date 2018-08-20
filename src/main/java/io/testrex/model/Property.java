@@ -1,4 +1,4 @@
-package eu.testresults.model;
+package io.testrex.model;
 
 import java.util.Objects;
 
@@ -8,8 +8,6 @@ import javax.validation.constraints.NotNull;
 import org.springframework.validation.annotation.Validated;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import io.swagger.annotations.ApiModelProperty;
 
 /**
  * Property
@@ -28,12 +26,6 @@ public class Property {
     return this;
   }
 
-  /**
-   * Get name
-   * 
-   * @return name
-   **/
-  @ApiModelProperty(required = true, value = "")
   @NotNull
   public String getName() {
     return name;
@@ -48,12 +40,6 @@ public class Property {
     return this;
   }
 
-  /**
-   * Get value
-   * 
-   * @return value
-   **/
-  @ApiModelProperty(required = true, value = "")
   @NotNull
   public String getValue() {
     return value;

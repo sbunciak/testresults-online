@@ -1,4 +1,4 @@
-package eu.testresults.model;
+package io.testrex.model;
 
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -9,8 +9,6 @@ import javax.validation.Valid;
 import org.springframework.validation.annotation.Validated;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import io.swagger.annotations.ApiModelProperty;
 
 /**
  * Failure
@@ -35,12 +33,6 @@ public class Failure {
     return this;
   }
 
-  /**
-   * Get message
-   * 
-   * @return message
-   **/
-  @ApiModelProperty(value = "")
   public String getMessage() {
     return message;
   }
@@ -54,12 +46,6 @@ public class Failure {
     return this;
   }
 
-  /**
-   * Get content
-   * 
-   * @return content
-   **/
-  @ApiModelProperty(value = "")
   public String getContent() {
     return content;
   }
@@ -73,12 +59,6 @@ public class Failure {
     return this;
   }
 
-  /**
-   * Get time
-   * 
-   * @return time
-   **/
-  @ApiModelProperty(value = "")
   @Valid
   public BigDecimal getTime() {
     return time;
@@ -93,12 +73,6 @@ public class Failure {
     return this;
   }
 
-  /**
-   * Get type
-   * 
-   * @return type
-   **/
-  @ApiModelProperty(value = "")
   public String getType() {
     return type;
   }

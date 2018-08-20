@@ -1,4 +1,4 @@
-package eu.testresults.model;
+package io.testrex.model;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -12,8 +12,6 @@ import javax.validation.constraints.NotNull;
 import org.springframework.validation.annotation.Validated;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import io.swagger.annotations.ApiModelProperty;
 
 /**
  * TestSuite
@@ -62,11 +60,6 @@ public class TestSuite   {
     return this;
   }
 
-  /**
-   * Get name
-   * @return name
-  **/
-  @ApiModelProperty(required = true, value = "")
   @NotNull
   public String getName() {
     return name;
@@ -81,11 +74,6 @@ public class TestSuite   {
     return this;
   }
 
-  /**
-   * Get group
-   * @return group
-  **/
-  @ApiModelProperty(value = "")
   public String getGroup() {
     return group;
   }
@@ -99,11 +87,6 @@ public class TestSuite   {
     return this;
   }
 
-  /**
-   * Get tests
-   * @return tests
-  **/
-  @ApiModelProperty(required = true, value = "")
   @NotNull
   public Integer getTests() {
     return tests;
@@ -118,11 +101,6 @@ public class TestSuite   {
     return this;
   }
 
-  /**
-   * Get failures
-   * @return failures
-  **/
-  @ApiModelProperty(required = true, value = "")
   @NotNull
   public Integer getFailures() {
     return failures;
@@ -137,11 +115,6 @@ public class TestSuite   {
     return this;
   }
 
-  /**
-   * Get errors
-   * @return errors
-  **/
-  @ApiModelProperty(required = true, value = "")
   @NotNull
   public Integer getErrors() {
     return errors;
@@ -156,11 +129,6 @@ public class TestSuite   {
     return this;
   }
 
-  /**
-   * Get skipped
-   * @return skipped
-  **/
-  @ApiModelProperty(required = true, value = "")
   @NotNull
   public Integer getSkipped() {
     return skipped;
@@ -175,11 +143,6 @@ public class TestSuite   {
     return this;
   }
 
-  /**
-   * Get time
-   * @return time
-  **/
-  @ApiModelProperty(required = true, value = "")
   @NotNull
   @Valid
   public BigDecimal getTime() {
@@ -203,11 +166,6 @@ public class TestSuite   {
     return this;
   }
 
-  /**
-   * Get labels
-   * @return labels
-  **/
-  @ApiModelProperty(value = "")
   public List<String> getLabels() {
     return labels;
   }
@@ -221,11 +179,6 @@ public class TestSuite   {
     return this;
   }
 
-  /**
-   * Get projectId
-   * @return projectId
-  **/
-  @ApiModelProperty(required = true, value = "")
   @NotNull
   public String getProjectId() {
     return projectId;
@@ -248,11 +201,6 @@ public class TestSuite   {
     return this;
   }
 
-  /**
-   * Get propertiesArray
-   * @return propertiesArray
-  **/
-  @ApiModelProperty(value = "")
   @Valid
   public List<Properties> getPropertiesArray() {
     return propertiesArray;
@@ -275,11 +223,6 @@ public class TestSuite   {
     return this;
   }
 
-  /**
-   * Get testcases
-   * @return testcases
-  **/
-  @ApiModelProperty(value = "")
   @Valid
   public List<TestCase> getTestcases() {
     return testcases;

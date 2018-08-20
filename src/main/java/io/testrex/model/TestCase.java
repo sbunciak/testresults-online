@@ -1,4 +1,4 @@
-package eu.testresults.model;
+package io.testrex.model;
 
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -10,8 +10,6 @@ import javax.validation.constraints.NotNull;
 import org.springframework.validation.annotation.Validated;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import io.swagger.annotations.ApiModelProperty;
 
 /**
  * TestCase
@@ -54,12 +52,6 @@ public class TestCase {
     return this;
   }
 
-  /**
-   * Get name
-   * 
-   * @return name
-   **/
-  @ApiModelProperty(required = true, value = "")
   @NotNull
   public String getName() {
     return name;
@@ -74,12 +66,6 @@ public class TestCase {
     return this;
   }
 
-  /**
-   * Get classname
-   * 
-   * @return classname
-   **/
-  @ApiModelProperty(value = "")
   public String getClassname() {
     return classname;
   }
@@ -93,12 +79,6 @@ public class TestCase {
     return this;
   }
 
-  /**
-   * Get group
-   * 
-   * @return group
-   **/
-  @ApiModelProperty(value = "")
   public String getGroup() {
     return group;
   }
@@ -112,12 +92,6 @@ public class TestCase {
     return this;
   }
 
-  /**
-   * Get time
-   * 
-   * @return time
-   **/
-  @ApiModelProperty(required = true, value = "")
   @NotNull
   @Valid
   public BigDecimal getTime() {
@@ -133,12 +107,6 @@ public class TestCase {
     return this;
   }
 
-  /**
-   * Get systemOut
-   * 
-   * @return systemOut
-   **/
-  @ApiModelProperty(value = "")
   public String getSystemOut() {
     return systemOut;
   }
@@ -152,12 +120,6 @@ public class TestCase {
     return this;
   }
 
-  /**
-   * Get systemErr
-   * 
-   * @return systemErr
-   **/
-  @ApiModelProperty(value = "")
   public String getSystemErr() {
     return systemErr;
   }
@@ -171,12 +133,6 @@ public class TestCase {
     return this;
   }
 
-  /**
-   * Get failure
-   * 
-   * @return failure
-   **/
-  @ApiModelProperty(value = "")
   @Valid
   public Failure getFailure() {
     return failure;
@@ -191,12 +147,6 @@ public class TestCase {
     return this;
   }
 
-  /**
-   * Get rerunFailure
-   * 
-   * @return rerunFailure
-   **/
-  @ApiModelProperty(value = "")
   @Valid
   public Failure getRerunFailure() {
     return rerunFailure;
@@ -211,12 +161,6 @@ public class TestCase {
     return this;
   }
 
-  /**
-   * Get skipped
-   * 
-   * @return skipped
-   **/
-  @ApiModelProperty(value = "")
   @Valid
   public Skipped getSkipped() {
     return skipped;
@@ -231,12 +175,6 @@ public class TestCase {
     return this;
   }
 
-  /**
-   * Get error
-   * 
-   * @return error
-   **/
-  @ApiModelProperty(value = "")
   @Valid
   public Error getError() {
     return error;

@@ -1,4 +1,4 @@
-package eu.testresults.model;
+package io.testrex.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,14 +11,11 @@ import org.springframework.validation.annotation.Validated;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import io.swagger.annotations.ApiModelProperty;
-
 /**
  * Properties
  */
 @Validated
 @Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2018-07-30T21:24:04.222Z")
-
 public class Properties {
   @JsonProperty("properties")
   @Valid
@@ -37,12 +34,6 @@ public class Properties {
     return this;
   }
 
-  /**
-   * Get properties
-   * 
-   * @return properties
-   **/
-  @ApiModelProperty(value = "")
   @Valid
   public List<Property> getProperties() {
     return properties;

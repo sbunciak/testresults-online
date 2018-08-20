@@ -1,4 +1,4 @@
-package eu.testresults.model;
+package io.testrex.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,8 +11,6 @@ import javax.validation.constraints.NotNull;
 import org.springframework.validation.annotation.Validated;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import io.swagger.annotations.ApiModelProperty;
 
 /**
  * User
@@ -35,12 +33,6 @@ public class User {
     return this;
   }
 
-  /**
-   * Get name
-   * 
-   * @return name
-   **/
-  @ApiModelProperty(required = true, value = "")
   @NotNull
   public String getName() {
     return name;
@@ -55,12 +47,6 @@ public class User {
     return this;
   }
 
-  /**
-   * Get email
-   * 
-   * @return email
-   **/
-  @ApiModelProperty(required = true, value = "")
   @NotNull
   public String getEmail() {
     return email;
@@ -83,12 +69,6 @@ public class User {
     return this;
   }
 
-  /**
-   * Get projectRoles
-   * 
-   * @return projectRoles
-   **/
-  @ApiModelProperty(value = "")
   @Valid
   public List<ProjectRole> getProjectRoles() {
     return projectRoles;
