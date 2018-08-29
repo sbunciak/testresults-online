@@ -17,7 +17,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @Validated
 @Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2018-07-30T21:24:04.222Z")
 public class Properties {
-  @JsonProperty("properties")
+  @JsonProperty("property")
   @Valid
   private List<Property> properties = null;
 

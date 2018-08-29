@@ -29,10 +29,10 @@ public class TestCase {
   @JsonProperty("time")
   private BigDecimal time = null;
 
-  @JsonProperty("system_out")
+  @JsonProperty("system-out")
   private String systemOut = null;
 
-  @JsonProperty("system_err")
+  @JsonProperty("system-err")
   private String systemErr = null;
 
   @JsonProperty("failure")

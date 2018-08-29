@@ -18,7 +18,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 @Validated
 @Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2018-07-30T21:24:04.222Z")
-public class TestSuite   {
+public class TestSuite {
   @JsonProperty("name")
   private String name = null;
 
@@ -47,11 +47,14 @@ public class TestSuite   {
   @JsonProperty("project_id")
   private String projectId = null;
 
-  @JsonProperty("properties_array")
+  // TODO: According to surefire xsd schema there can be multiple occurences of
+  // "properties" tag, although I haven't seen such case, thus using only single
+  // instance
+  @JsonProperty("properties")
   @Valid
-  private List<Properties> propertiesArray = null;
+  private Properties properties = null;
 
-  @JsonProperty("testcases")
+  @JsonProperty("testcase")
   @Valid
   private List<TestCase> testcases = null;
 
@@ -188,34 +191,21 @@ public class TestSuite   {
     this.projectId = projectId;
   }
 
-  public TestSuite propertiesArray(List<Properties> propertiesArray) {
-    this.propertiesArray = propertiesArray;
-    return this;
-  }
-
-  public TestSuite addPropertiesArrayItem(Properties propertiesArrayItem) {
-    if (this.propertiesArray == null) {
-      this.propertiesArray = new ArrayList<Properties>();
-    }
-    this.propertiesArray.add(propertiesArrayItem);
-    return this;
-  }
-
   @Valid
-  public List<Properties> getPropertiesArray() {
-    return propertiesArray;
+  public Properties getProperties() {
+    return properties;
   }
 
-  public void setPropertiesArray(List<Properties> propertiesArray) {
-    this.propertiesArray = propertiesArray;
+  public void setProperties(Properties properties) {
+    this.properties = properties;
   }
 
-  public TestSuite testcases(List<TestCase> testcases) {
+  public TestSuite testCases(List<TestCase> testcases) {
     this.testcases = testcases;
     return this;
   }
 
-  public TestSuite addTestcasesItem(TestCase testcasesItem) {
+  public TestSuite addTestCase(TestCase testcasesItem) {
     if (this.testcases == null) {
       this.testcases = new ArrayList<TestCase>();
     }
@@ -224,14 +214,13 @@ public class TestSuite   {
   }
 
   @Valid
-  public List<TestCase> getTestcases() {
+  public List<TestCase> getTestCases() {
     return testcases;
   }
 
-  public void setTestcases(List<TestCase> testcases) {
+  public void setTestCases(List<TestCase> testcases) {
     this.testcases = testcases;
   }
-
 
   @Override
   public boolean equals(java.lang.Object o) {
@@ -242,29 +231,22 @@ public class TestSuite   {
       return false;
     }
     TestSuite testSuite = (TestSuite) o;
-    return Objects.equals(this.name, testSuite.name) &&
-        Objects.equals(this.group, testSuite.group) &&
-        Objects.equals(this.tests, testSuite.tests) &&
-        Objects.equals(this.failures, testSuite.failures) &&
-        Objects.equals(this.errors, testSuite.errors) &&
-        Objects.equals(this.skipped, testSuite.skipped) &&
-        Objects.equals(this.time, testSuite.time) &&
-        Objects.equals(this.labels, testSuite.labels) &&
-        Objects.equals(this.projectId, testSuite.projectId) &&
-        Objects.equals(this.propertiesArray, testSuite.propertiesArray) &&
-        Objects.equals(this.testcases, testSuite.testcases);
+    return Objects.equals(this.name, testSuite.name) && Objects.equals(this.group, testSuite.group) && Objects.equals(this.tests, testSuite.tests)
+        && Objects.equals(this.failures, testSuite.failures) && Objects.equals(this.errors, testSuite.errors) && Objects.equals(this.skipped, testSuite.skipped)
+        && Objects.equals(this.time, testSuite.time) && Objects.equals(this.labels, testSuite.labels) && Objects.equals(this.projectId, testSuite.projectId)
+        && Objects.equals(this.properties, testSuite.properties) && Objects.equals(this.testcases, testSuite.testcases);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(name, group, tests, failures, errors, skipped, time, labels, projectId, propertiesArray, testcases);
+    return Objects.hash(name, group, tests, failures, errors, skipped, time, labels, projectId, properties, testcases);
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class TestSuite {\n");
-    
+
     sb.append("    name: ").append(toIndentedString(name)).append("\n");
     sb.append("    group: ").append(toIndentedString(group)).append("\n");
     sb.append("    tests: ").append(toIndentedString(tests)).append("\n");
@@ -274,7 +256,7 @@ public class TestSuite   {
     sb.append("    time: ").append(toIndentedString(time)).append("\n");
     sb.append("    labels: ").append(toIndentedString(labels)).append("\n");
     sb.append("    projectId: ").append(toIndentedString(projectId)).append("\n");
-    sb.append("    propertiesArray: ").append(toIndentedString(propertiesArray)).append("\n");
+    sb.append("    properties: ").append(toIndentedString(properties)).append("\n");
     sb.append("    testcases: ").append(toIndentedString(testcases)).append("\n");
     sb.append("}");
     return sb.toString();
