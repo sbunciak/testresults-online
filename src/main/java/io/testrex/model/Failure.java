@@ -19,6 +19,8 @@ public class Failure {
   @JsonProperty("message")
   private String message = null;
 
+  // this is a field only in json
+  // in xml it represents the textual content of the element
   @JsonProperty("content")
   private String content = null;
 
