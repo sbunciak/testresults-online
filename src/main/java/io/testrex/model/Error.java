@@ -1,27 +1,33 @@
 package io.testrex.model;
 
-import java.util.Objects;
-
-import javax.annotation.Generated;
-
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
 import org.springframework.validation.annotation.Validated;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import javax.annotation.Generated;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import java.util.Objects;
 
 /**
  * Error
  */
 @Validated
 @Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2018-07-30T21:24:04.222Z")
+@Embeddable
 public class Error {
   @JsonProperty("message")
+  @Column(name = "message")
   private String message = null;
 
   // this is a field only in json
   // in xml it represents the textual content of the element
+  @Column(name = "content")
   @JsonProperty("content")
+  @JacksonXmlText
   private String content = null;
 
+  @Column(name = "type")
   @JsonProperty("type")
   private String type = null;
 
@@ -103,4 +109,5 @@ public class Error {
     }
     return o.toString().replace("\n", "\n    ");
   }
+
 }

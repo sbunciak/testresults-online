@@ -450,7 +450,7 @@ definitions:
       properties_array:
         type: array
         items:
-          $ref: '#/definitions/Properties' 
+          $ref: '#/definitions/Property'
       # xml field is 'testcase'
       testcases:
         type: array

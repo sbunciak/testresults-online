@@ -1,24 +1,26 @@
 package io.testrex.model;
 
-import java.util.Objects;
-
-import javax.annotation.Generated;
-import javax.validation.constraints.NotNull;
-
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.validation.annotation.Validated;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import javax.annotation.Generated;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import javax.validation.constraints.NotNull;
+import java.util.Objects;
 
 /**
  * Property
  */
 @Validated
 @Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2018-07-30T21:24:04.222Z")
+@Embeddable
 public class Property {
   @JsonProperty("name")
   private String name = null;
 
   @JsonProperty("value")
+  @Column(name = "value", columnDefinition="TEXT")
   private String value = null;
 
   public Property name(String name) {
@@ -70,7 +72,6 @@ public class Property {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Property {\n");
-
     sb.append("    name: ").append(toIndentedString(name)).append("\n");
     sb.append("    value: ").append(toIndentedString(value)).append("\n");
     sb.append("}");

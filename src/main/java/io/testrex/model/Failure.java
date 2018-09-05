@@ -1,33 +1,41 @@
 package io.testrex.model;
 
-import java.math.BigDecimal;
-import java.util.Objects;
-
-import javax.annotation.Generated;
-import javax.validation.Valid;
-
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
 import org.springframework.validation.annotation.Validated;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import javax.annotation.Generated;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import javax.validation.Valid;
+import java.math.BigDecimal;
+import java.util.Objects;
 
 /**
  * Failure
  */
 @Validated
 @Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2018-07-30T21:24:04.222Z")
+@Embeddable
 public class Failure {
+
   @JsonProperty("message")
+  @Column
   private String message = null;
 
   // this is a field only in json
   // in xml it represents the textual content of the element
   @JsonProperty("content")
+  @Column(name = "content")
+  @JacksonXmlText
   private String content = null;
 
   @JsonProperty("time")
+  @Column
   private BigDecimal time = null;
 
   @JsonProperty("type")
+  @Column
   private String type = null;
 
   public Failure message(String message) {

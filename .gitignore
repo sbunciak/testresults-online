@@ -22,6 +22,9 @@ hs_err_pid*
 .settings/
 .springBeans
 
+#IDEA
+.iml
+
 # Maven
 target/
 pom.xml.tag
