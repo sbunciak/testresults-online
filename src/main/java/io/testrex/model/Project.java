@@ -1,13 +1,11 @@
 package io.testrex.model;
 
-import java.util.Objects;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.validation.annotation.Validated;
 
 import javax.annotation.Generated;
 import javax.validation.constraints.NotNull;
-
-import org.springframework.validation.annotation.Validated;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.Objects;
 
 /**
  * Project

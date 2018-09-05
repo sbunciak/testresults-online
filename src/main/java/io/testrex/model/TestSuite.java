@@ -1,28 +1,41 @@
 package io.testrex.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
+import org.springframework.validation.annotation.Validated;
+
+import javax.annotation.Generated;
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import javax.annotation.Generated;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-
-import org.springframework.validation.annotation.Validated;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 /**
  * TestSuite
  */
+
 @Validated
 @Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2018-07-30T21:24:04.222Z")
+@Entity
 public class TestSuite {
+  @GeneratedValue(strategy=GenerationType.IDENTITY)
+  @Id
+  Long id;
+
   @JsonProperty("name")
   private String name = null;
 
   @JsonProperty("group")
+  @Column(name = "ts_group")
   private String group = null;
 
   @JsonProperty("tests")
@@ -35,32 +48,47 @@ public class TestSuite {
   private Integer errors = null;
 
   @JsonProperty("skipped")
-  private Integer skipped = null;
+  private Integer skipped = 0;
 
   @JsonProperty("time")
   private BigDecimal time = null;
 
   @JsonProperty("labels")
   @Valid
+  @ElementCollection(targetClass = String.class)
   private List<String> labels = null;
 
   @JsonProperty("project_id")
-  private String projectId = null;
+  @Column(name = "project_id", nullable = true)
+  private String projectId = "";
 
   // TODO: According to surefire xsd schema there can be multiple occurences of
   // "properties" tag, although I haven't seen such case, thus using only single
   // instance
   @JsonProperty("properties")
   @Valid
-  private Properties properties = null;
+  @ElementCollection
+  @CollectionTable(name = "properties")
+  private List<Property> properties = null;
 
-  @JsonProperty("testcase")
   @Valid
+  @JsonProperty("testcase")
+  @JacksonXmlElementWrapper(useWrapping=false)
+  @ElementCollection
+  @CollectionTable(name = "testcases")
   private List<TestCase> testcases = null;
 
   public TestSuite name(String name) {
     this.name = name;
     return this;
+  }
+
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
   }
 
   @NotNull
@@ -83,6 +111,14 @@ public class TestSuite {
 
   public void setGroup(String group) {
     this.group = group;
+  }
+
+  public List<Property> getProperties() {
+    return properties;
+  }
+
+  public void setProperties(List<Property> properties) {
+    this.properties = properties;
   }
 
   public TestSuite tests(Integer tests) {
@@ -132,7 +168,7 @@ public class TestSuite {
     return this;
   }
 
-  @NotNull
+
   public Integer getSkipped() {
     return skipped;
   }
@@ -182,22 +218,12 @@ public class TestSuite {
     return this;
   }
 
-  @NotNull
   public String getProjectId() {
     return projectId;
   }
 
   public void setProjectId(String projectId) {
     this.projectId = projectId;
-  }
-
-  @Valid
-  public Properties getProperties() {
-    return properties;
-  }
-
-  public void setProperties(Properties properties) {
-    this.properties = properties;
   }
 
   public TestSuite testCases(List<TestCase> testcases) {

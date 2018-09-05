@@ -1,25 +1,28 @@
 package io.testrex.model;
 
-import java.util.Objects;
-
-import javax.annotation.Generated;
-
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.validation.annotation.Validated;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import javax.annotation.Generated;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import java.util.Objects;
 
 /**
  * Skipped
  */
 @Validated
 @Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2018-07-30T21:24:04.222Z")
+@Embeddable
 public class Skipped {
   @JsonProperty("message")
+  @Column(name = "message")
   private String message = null;
 
   // this is a field only in json
   // in xml it represents the textual content of the element
   @JsonProperty("content")
+  @Column(name = "content")
   private String content = null;
 
   public Skipped message(String message) {

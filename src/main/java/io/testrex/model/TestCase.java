@@ -1,21 +1,26 @@
 package io.testrex.model;
 
-import java.math.BigDecimal;
-import java.util.Objects;
-
-import javax.annotation.Generated;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import org.springframework.validation.annotation.Validated;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import javax.annotation.Generated;
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import javax.persistence.Embedded;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
+import java.util.Objects;
 
 /**
  * TestCase
  */
 @Validated
 @Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2018-07-30T21:24:04.222Z")
+@Embeddable
 public class TestCase {
   @JsonProperty("name")
   private String name = null;
@@ -24,6 +29,7 @@ public class TestCase {
   private String classname = null;
 
   @JsonProperty("group")
+  @Column(name = "tc_group")
   private String group = null;
 
   @JsonProperty("time")
@@ -36,20 +42,48 @@ public class TestCase {
   private String systemErr = null;
 
   @JsonProperty("failure")
+  @Embedded
+  @AttributeOverrides(value = {
+          @AttributeOverride(name = "time", column = @Column(name = "failureTime")),
+          @AttributeOverride(name = "content", column = @Column(name = "failureContent", columnDefinition="TEXT"))
+  })
   private Failure failure = null;
 
   @JsonProperty("rerunFailure")
+  @Embedded
+  @AttributeOverrides(value = {
+          @AttributeOverride(name = "message", column = @Column(name = "returnFailureMessage")),
+          @AttributeOverride(name = "content", column = @Column(name = "returnFailureContent", columnDefinition="TEXT")),
+          @AttributeOverride(name = "time", column = @Column(name = "returnFailureTime")),
+          @AttributeOverride(name = "type", column = @Column(name = "returnFailureType"))
+  })
   private Failure rerunFailure = null;
 
   @JsonProperty("skipped")
+  @Embedded
+  @AttributeOverrides(value = {
+          @AttributeOverride(name = "message", column = @Column(name = "skipperMessage")),
+          @AttributeOverride(name = "content", column = @Column(name = "skippedContent", columnDefinition="TEXT"))
+  })
   private Skipped skipped = null;
 
   @JsonProperty("error")
+  @Embedded
+  @AttributeOverrides(value = {
+          @AttributeOverride(name = "message", column = @Column(name = "errorMessage")),
+          @AttributeOverride(name = "content", column = @Column(name = "errorContent", columnDefinition="TEXT")),
+          @AttributeOverride(name = "type", column = @Column(name = "errorType"))
+  })
   private Error error = null;
 
   public TestCase name(String name) {
     this.name = name;
     return this;
+  }
+
+  public TestCase(String name, BigDecimal time) {
+    this.name = name;
+    this.time = time;
   }
 
   @NotNull
@@ -87,6 +121,9 @@ public class TestCase {
     this.group = group;
   }
 
+  public TestCase() {
+  }
+
   public TestCase time(BigDecimal time) {
     this.time = time;
     return this;
@@ -98,6 +135,7 @@ public class TestCase {
     return time;
   }
 
+  @JsonSetter("time")
   public void setTime(BigDecimal time) {
     this.time = time;
   }
@@ -197,6 +235,7 @@ public class TestCase {
         && Objects.equals(this.time, testCase.time) && Objects.equals(this.systemOut, testCase.systemOut) && Objects.equals(this.systemErr, testCase.systemErr)
         && Objects.equals(this.failure, testCase.failure) && Objects.equals(this.rerunFailure, testCase.rerunFailure) && Objects.equals(this.skipped, testCase.skipped)
         && Objects.equals(this.error, testCase.error);
+
   }
 
   @Override
