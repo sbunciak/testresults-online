@@ -4,6 +4,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.validation.annotation.Validated;
 
 import javax.annotation.Generated;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
@@ -12,16 +18,31 @@ import java.util.Objects;
  */
 @Validated
 @Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2018-07-30T21:24:04.222Z")
+@Table(name = "project")
+@Entity
 public class Project {
+  @JsonProperty
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  Long projectId;
+
   @JsonProperty("name")
   private String name = null;
 
   @JsonProperty("desc")
+  @Column(name = "description")
   private String desc = null;
 
   public Project name(String name) {
     this.name = name;
     return this;
+  }
+  public Long getProjectId() {
+    return projectId;
+  }
+
+  public void setProjectId(Long projectId) {
+    this.projectId = projectId;
   }
 
   @NotNull
@@ -67,7 +88,6 @@ public class Project {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Project {\n");
-
     sb.append("    name: ").append(toIndentedString(name)).append("\n");
     sb.append("    desc: ").append(toIndentedString(desc)).append("\n");
     sb.append("}");

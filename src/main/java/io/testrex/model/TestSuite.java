@@ -12,6 +12,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
@@ -58,9 +59,10 @@ public class TestSuite {
   @ElementCollection(targetClass = String.class)
   private List<String> labels = null;
 
-  @JsonProperty("project_id")
-  @Column(name = "project_id", nullable = true)
-  private String projectId = "";
+  @JsonProperty("project")
+  @ManyToOne
+  private Project project = null;
+
 
   // TODO: According to surefire xsd schema there can be multiple occurences of
   // "properties" tag, although I haven't seen such case, thus using only single
@@ -213,18 +215,19 @@ public class TestSuite {
     this.labels = labels;
   }
 
-  public TestSuite projectId(String projectId) {
-    this.projectId = projectId;
+  public TestSuite project(Project project) {
+    this.project = project;
     return this;
   }
 
-  public String getProjectId() {
-    return projectId;
+  public Project getProject() {
+    return project;
   }
 
-  public void setProjectId(String projectId) {
-    this.projectId = projectId;
+  public void setProject(Project project) {
+    this.project = project;
   }
+
 
   public TestSuite testCases(List<TestCase> testcases) {
     this.testcases = testcases;
@@ -259,13 +262,13 @@ public class TestSuite {
     TestSuite testSuite = (TestSuite) o;
     return Objects.equals(this.name, testSuite.name) && Objects.equals(this.group, testSuite.group) && Objects.equals(this.tests, testSuite.tests)
         && Objects.equals(this.failures, testSuite.failures) && Objects.equals(this.errors, testSuite.errors) && Objects.equals(this.skipped, testSuite.skipped)
-        && Objects.equals(this.time, testSuite.time) && Objects.equals(this.labels, testSuite.labels) && Objects.equals(this.projectId, testSuite.projectId)
+        && Objects.equals(this.time, testSuite.time) && Objects.equals(this.labels, testSuite.labels) && Objects.equals(this.project, testSuite.project)
         && Objects.equals(this.properties, testSuite.properties) && Objects.equals(this.testcases, testSuite.testcases);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(name, group, tests, failures, errors, skipped, time, labels, projectId, properties, testcases);
+    return Objects.hash(name, group, tests, failures, errors, skipped, time, labels, project, properties, testcases);
   }
 
   @Override
@@ -281,7 +284,7 @@ public class TestSuite {
     sb.append("    skipped: ").append(toIndentedString(skipped)).append("\n");
     sb.append("    time: ").append(toIndentedString(time)).append("\n");
     sb.append("    labels: ").append(toIndentedString(labels)).append("\n");
-    sb.append("    projectId: ").append(toIndentedString(projectId)).append("\n");
+    sb.append("    projectId: ").append(toIndentedString(project)).append("\n");
     sb.append("    properties: ").append(toIndentedString(properties)).append("\n");
     sb.append("    testcases: ").append(toIndentedString(testcases)).append("\n");
     sb.append("}");

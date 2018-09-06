@@ -4,9 +4,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import io.testrex.model.Project;
 import io.testrex.model.Property;
 import io.testrex.model.TestCase;
 import io.testrex.model.TestSuite;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +49,8 @@ public class TestRexApplicationTests {
 
   private final HttpHeaders headers = new HttpHeaders();
   private final String filePath = "src/test/resources/";
+  private Long projectId;
+  private boolean projectInit = false;
 
   @LocalServerPort
   private int port;
@@ -57,10 +61,29 @@ public class TestRexApplicationTests {
   @Autowired
   private TestRestTemplate testRestTemplate;
 
+  @Before
+  public void createProject() {
+    if(!projectInit) {
+      headers.setContentType(MediaType.APPLICATION_JSON);
+      Project project = new Project();
+      project.setName("testProject");
+      project.setProjectId(projectId);
+      ObjectMapper objectMapper = new ObjectMapper();
+      try {
+        TestRestTemplate testRestTemplate = new TestRestTemplate();
+        HttpEntity<String> entity = new HttpEntity<>(objectMapper.writeValueAsString(project), headers);
+        ResponseEntity<Project> response = testRestTemplate.postForEntity("http://localhost:" + this.port + "/projects/", entity, Project.class);
+        projectId = response.getBody().getProjectId();
+      } catch (JsonProcessingException e) {
+        e.printStackTrace();
+      }
+      projectInit = true;
+    }
+  }
+
   @Test
   public void shouldReturn404WhenSendingRequestToController() {
-    System.out.println("http://localhost:" + this.port + "/testsuites/1");
-    
+    System.out.println("http://localhost:" + this.port + "projects/" + projectId +"/testsuites/1");
     @SuppressWarnings("rawtypes")
     ResponseEntity<Map> entity = this.testRestTemplate.getForEntity("http://localhost:" + this.port + "/testsuites/0", Map.class);
 
@@ -78,42 +101,42 @@ public class TestRexApplicationTests {
 
   @Test
   public void parseTestSuiteReturnsXML() {
-      headers.setContentType(MediaType.APPLICATION_XML);
-      headers.setAccept(Collections.singletonList(MediaType.APPLICATION_XML));
-      HttpEntity<String> entity = new HttpEntity<>(readTestFile(Paths.get(filePath + "TEST-classWithNoTests.NoMethodsTestCase.xml")), headers);
-      ResponseEntity<String> response = testRestTemplate.postForEntity(getUrl(), entity, String.class);
+    headers.setContentType(MediaType.APPLICATION_XML);
+    headers.setAccept(Collections.singletonList(MediaType.APPLICATION_XML));
+    HttpEntity<String> entity = new HttpEntity<>(readTestFile(Paths.get(filePath + "TEST-classWithNoTests.NoMethodsTestCase.xml")), headers);
+    ResponseEntity<String> response = testRestTemplate.postForEntity(getUrl(), entity, String.class);
 
-      JacksonXmlModule xmlModule = new JacksonXmlModule();
-      xmlModule.setDefaultUseWrapper(false);
-      ObjectMapper objectMapper = new XmlMapper(xmlModule);
-      Exception ex = null;
-      try {
-          objectMapper.readTree(response.getBody());
-      } catch (JsonProcessingException e) {
-          ex = e;
-      }
-      catch (IOException e) {
-          e.printStackTrace();
-      }
-      assertNull(ex);
+    JacksonXmlModule xmlModule = new JacksonXmlModule();
+    xmlModule.setDefaultUseWrapper(false);
+    ObjectMapper objectMapper = new XmlMapper(xmlModule);
+    Exception ex = null;
+    try {
+        objectMapper.readTree(response.getBody());
+    } catch (JsonProcessingException e) {
+        ex = e;
+    }
+    catch (IOException e) {
+        e.printStackTrace();
+    }
+    assertNull(ex);
   }
 
   @Test
   public void parseTestSuiteReturnsJSON() {
-      headers.setContentType(MediaType.APPLICATION_XML);
-      headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-      HttpEntity<String> entity = new HttpEntity<>(readTestFile(Paths.get(filePath + "TEST-classWithNoTests.NoMethodsTestCase.xml")), headers);
-      ResponseEntity<String> response = testRestTemplate.postForEntity(getUrl(), entity, String.class);
-      boolean valid = true;
-      try {
-          final ObjectMapper jsonParser = new ObjectMapper();
-          jsonParser.readTree(response.getBody());
-      } catch (JsonProcessingException e) {
-          valid = false;
-      } catch (IOException e) {
-          e.printStackTrace();
-      }
-      assertTrue(valid);
+    headers.setContentType(MediaType.APPLICATION_XML);
+    headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+    HttpEntity<String> entity = new HttpEntity<>(readTestFile(Paths.get(filePath + "TEST-classWithNoTests.NoMethodsTestCase.xml")), headers);
+    ResponseEntity<String> response = testRestTemplate.postForEntity(getUrl(), entity, String.class);
+    boolean valid = true;
+    try {
+        final ObjectMapper jsonParser = new ObjectMapper();
+        jsonParser.readTree(response.getBody());
+    } catch (JsonProcessingException e) {
+        valid = false;
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+    assertTrue(valid);
   }
 
   @Test
@@ -124,17 +147,17 @@ public class TestRexApplicationTests {
     ResponseEntity<TestSuite> response = testRestTemplate.postForEntity(getUrl(), entity, TestSuite.class);
     assertTrue(response.getStatusCode().is2xxSuccessful());
 
-      assertThat(response.getBody().getErrors(), is(0));
-      assertThat(response.getBody().getSkipped(), is(0));
-      assertThat(response.getBody().getTests(), is(0));
-      assertThat(response.getBody().getTime().toString(), is("0"));
-      assertThat(response.getBody().getFailures(), is(0));
-      assertThat(response.getBody().getName(), is("classWithNoTests.NoMethodsTestCase"));
-      List<Property> properties = response.getBody().getProperties();
-      assertThat(properties.get(0).getValue(), is("Java(TM) 2 Runtime Environment, Standard Edition"));
-      assertThat(properties.get(0).getName(), is("java.runtime.name"));
-      assertThat(properties.get(56).getValue(), is("pentium_pro+mmx pentium_pro pentium+mmx pentium i486 i386 i86"));
-      assertThat(properties.get(56).getName(), is("sun.cpu.isalist"));
+    assertThat(response.getBody().getErrors(), is(0));
+    assertThat(response.getBody().getSkipped(), is(0));
+    assertThat(response.getBody().getTests(), is(0));
+    assertThat(response.getBody().getTime().toString(), is("0"));
+    assertThat(response.getBody().getFailures(), is(0));
+    assertThat(response.getBody().getName(), is("classWithNoTests.NoMethodsTestCase"));
+    List<Property> properties = response.getBody().getProperties();
+    assertThat(properties.get(0).getValue(), is("Java(TM) 2 Runtime Environment, Standard Edition"));
+    assertThat(properties.get(0).getName(), is("java.runtime.name"));
+    assertThat(properties.get(56).getValue(), is("pentium_pro+mmx pentium_pro pentium+mmx pentium i486 i386 i86"));
+    assertThat(properties.get(56).getName(), is("sun.cpu.isalist"));
 
     testRestTemplate.delete(getUrl() + response.getBody().getId());
     ResponseEntity<String> deletedResponse = testRestTemplate.getForEntity(getUrl() + response.getBody().getId(), String.class);
@@ -173,41 +196,41 @@ public class TestRexApplicationTests {
     HttpEntity<String> entity = new HttpEntity<>(readTestFile(Paths.get(filePath + "TEST-com.shape.CircleTest.xml")), headers);
     ResponseEntity<TestSuite> response = testRestTemplate.postForEntity(getUrl(), entity, TestSuite.class);
     assertTrue(response.getStatusCode().is2xxSuccessful());
-      assertThat(response.getBody().getErrors(), is(1));
-      assertThat(response.getBody().getTests(), is(8));
-      assertThat(response.getBody().getTime().toString(), is("0.201"));
-      assertThat(response.getBody().getFailures(), is(1));
-      assertThat(response.getBody().getName(), is("com.shape.CircleTest"));
-      List<Property> properties = response.getBody().getProperties();
-      assertThat(properties.get(0).getValue(), is("Java(TM) 2 Runtime Environment, Standard Edition"));
-      assertThat(properties.get(0).getName(), is("java.runtime.name"));
-      assertThat(properties.get(54).getValue(), is("pentium_pro+mmx pentium_pro pentium+mmx pentium i486 i386 i86"));
-      assertThat(properties.get(54).getName(), is("sun.cpu.isalist"));
-      List<TestCase> testCases = response.getBody().getTestCases();
-      assertThat(testCases.get(0).getTime().toString(), is("0.01"));
-      assertThat(testCases.get(0).getName(), is("testX"));
-      assertThat(testCases.get(1).getTime().toString(), is("0"));
-      assertThat(testCases.get(1).getName(), is("testY"));
-      assertThat(testCases.get(2).getTime().toString(), is("0"));
-      assertThat(testCases.get(2).getName(), is("testXY"));
-      assertThat(testCases.get(3).getTime().toString(), is("0.01"));
-      assertThat(testCases.get(3).getName(), is("testRadius"));
-      assertThat(testCases.get(3).getFailure().getMessage(), is("expected:<20> but was:<10>"));
-      assertThat(testCases.get(3).getFailure().getContent(), equalToIgnoringWhiteSpace("junit.framework.AssertionFailedError: expected:<20> but was:<10>\n      at junit.framework.Assert.fail(Assert.java:47)\n      at junit.framework.Assert.failNotEquals(Assert.java:282)\n      at junit.framework.Assert.assertEquals(Assert.java:64)\n      at junit.framework.Assert.assertEquals(Assert.java:201)\n      at junit.framework.Assert.assertEquals(Assert.java:207)\n      at com.shape.CircleTest.testRadius(CircleTest.java:34)\n      at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n      at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)\n      at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)\n      at java.lang.reflect.Method.invoke(Method.java:585)\n      at junit.framework.TestCase.runTest(TestCase.java:154)\n      at junit.framework.TestCase.runBare(TestCase.java:127)\n      at junit.framework.TestResult$1.protect(TestResult.java:106)\n      at junit.framework.TestResult.runProtected(TestResult.java:124)\n      at junit.framework.TestResult.run(TestResult.java:109)\n      at junit.framework.TestCase.run(TestCase.java:118)\n      at junit.framework.TestSuite.runTest(TestSuite.java:208)\n      at junit.framework.TestSuite.run(TestSuite.java:203)\n      at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n      at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)\n      at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)\n      at java.lang.reflect.Method.invoke(Method.java:585)\n      at org.codehaus.surefire.battery.JUnitBattery.executeJUnit(JUnitBattery.java:246)\n      at org.codehaus.surefire.battery.JUnitBattery.execute(JUnitBattery.java:220)\n      at org.codehaus.surefire.Surefire.executeBattery(Surefire.java:203)\n      at org.codehaus.surefire.Surefire.run(Surefire.java:152)\n      at org.codehaus.surefire.Surefire.run(Surefire.java:76)\n      at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n      at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)\n      at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)\n      at java.lang.reflect.Method.invoke(Method.java:585)\n      at org.codehaus.surefire.SurefireBooter.run(SurefireBooter.java:104)\n      at org.apache.maven.test.SurefirePlugin.execute(SurefirePlugin.java:241)\n      at org.apache.maven.plugin.DefaultPluginManager.executeMojo(DefaultPluginManager.java:357)\n      at org.apache.maven.lifecycle.DefaultLifecycleExecutor.executeGoals(DefaultLifecycleExecutor.java:479)\n      at org.apache.maven.lifecycle.DefaultLifecycleExecutor.executeGoalWithLifecycle(DefaultLifecycleExecutor.java:452)\n      at org.apache.maven.lifecycle.DefaultLifecycleExecutor.executeGoal(DefaultLifecycleExecutor.java:438)\n      at org.apache.maven.lifecycle.DefaultLifecycleExecutor.executeTaskSegments(DefaultLifecycleExecutor.java:273)\n      at org.apache.maven.lifecycle.DefaultLifecycleExecutor.execute(DefaultLifecycleExecutor.java:131)\n      at org.apache.maven.DefaultMaven.execute(DefaultMaven.java:186)\n      at org.apache.maven.cli.MavenCli.main(MavenCli.java:316)\n      at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n      at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)\n      at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)\n      at java.lang.reflect.Method.invoke(Method.java:585)\n      at org.codehaus.classworlds.Launcher.launchEnhanced(Launcher.java:315)\n      at org.codehaus.classworlds.Launcher.launch(Launcher.java:255)\n      at org.codehaus.classworlds.Launcher.mainWithExitCode(Launcher.java:430)\n      at org.codehaus.classworlds.Launcher.main(Launcher.java:375)".replaceAll("\n", "")));
-      assertThat(testCases.get(3).getSystemOut(), equalToIgnoringWhiteSpace("[OUT] : Getting the diameter"));
-      assertThat(testCases.get(3).getSystemErr(), equalToIgnoringWhiteSpace("[ERR] : Getting the Circumference"));
-      assertThat(testCases.get(4).getTime().toString(), is("0.02"));
-      assertThat(testCases.get(4).getName(), is("testProperties"));
-      assertThat(testCases.get(4).getError().getMessage(), is("/ by zero"));
-      assertThat(testCases.get(4).getError().getContent(), equalToIgnoringWhiteSpace("java.lang.ArithmeticException: / by zero\n      at com.shape.CircleTest.testProperties(CircleTest.java:44)\n      at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n      at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)\n      at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)\n      at java.lang.reflect.Method.invoke(Method.java:585)\n      at junit.framework.TestCase.runTest(TestCase.java:154)\n      at junit.framework.TestCase.runBare(TestCase.java:127)\n      at junit.framework.TestResult$1.protect(TestResult.java:106)\n      at junit.framework.TestResult.runProtected(TestResult.java:124)\n      at junit.framework.TestResult.run(TestResult.java:109)\n      at junit.framework.TestCase.run(TestCase.java:118)\n      at junit.framework.TestSuite.runTest(TestSuite.java:208)\n      at junit.framework.TestSuite.run(TestSuite.java:203)\n      at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n      at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)\n      at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)\n      at java.lang.reflect.Method.invoke(Method.java:585)\n      at org.codehaus.surefire.battery.JUnitBattery.executeJUnit(JUnitBattery.java:246)\n      at org.codehaus.surefire.battery.JUnitBattery.execute(JUnitBattery.java:220)\n      at org.codehaus.surefire.Surefire.executeBattery(Surefire.java:203)\n      at org.codehaus.surefire.Surefire.run(Surefire.java:152)\n      at org.codehaus.surefire.Surefire.run(Surefire.java:76)\n      at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n      at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)\n      at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)\n      at java.lang.reflect.Method.invoke(Method.java:585)\n      at org.codehaus.surefire.SurefireBooter.run(SurefireBooter.java:104)\n      at org.apache.maven.test.SurefirePlugin.execute(SurefirePlugin.java:241)\n      at org.apache.maven.plugin.DefaultPluginManager.executeMojo(DefaultPluginManager.java:357)\n      at org.apache.maven.lifecycle.DefaultLifecycleExecutor.executeGoals(DefaultLifecycleExecutor.java:479)\n      at org.apache.maven.lifecycle.DefaultLifecycleExecutor.executeGoalWithLifecycle(DefaultLifecycleExecutor.java:452)\n      at org.apache.maven.lifecycle.DefaultLifecycleExecutor.executeGoal(DefaultLifecycleExecutor.java:438)\n      at org.apache.maven.lifecycle.DefaultLifecycleExecutor.executeTaskSegments(DefaultLifecycleExecutor.java:273)\n      at org.apache.maven.lifecycle.DefaultLifecycleExecutor.execute(DefaultLifecycleExecutor.java:131)\n      at org.apache.maven.DefaultMaven.execute(DefaultMaven.java:186)\n      at org.apache.maven.cli.MavenCli.main(MavenCli.java:316)\n      at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n      at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)\n      at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)\n      at java.lang.reflect.Method.invoke(Method.java:585)\n      at org.codehaus.classworlds.Launcher.launchEnhanced(Launcher.java:315)\n      at org.codehaus.classworlds.Launcher.launch(Launcher.java:255)\n      at org.codehaus.classworlds.Launcher.mainWithExitCode(Launcher.java:430)\n      at org.codehaus.classworlds.Launcher.main(Launcher.java:375)".replaceAll("\n", "")));
-      assertThat(testCases.get(4).getSystemOut(), equalToIgnoringWhiteSpace("[OUT] : Getting the diameter"));
-      assertThat(testCases.get(4).getSystemErr(), equalToIgnoringWhiteSpace("[ERR] : Getting the Circumference"));
-      assertThat(testCases.get(5).getTime().toString(), is("0"));
-      assertThat(testCases.get(5).getName(), is("testPI"));
-      assertThat(testCases.get(6).getTime().toString(), is("0.01"));
-      assertThat(testCases.get(6).getName(), is("testCircumference"));
-      assertThat(testCases.get(7).getTime().toString(), is("0"));
-      assertThat(testCases.get(7).getName(), is("testDiameter"));
+    assertThat(response.getBody().getErrors(), is(1));
+    assertThat(response.getBody().getTests(), is(8));
+    assertThat(response.getBody().getTime().toString(), is("0.201"));
+    assertThat(response.getBody().getFailures(), is(1));
+    assertThat(response.getBody().getName(), is("com.shape.CircleTest"));
+    List<Property> properties = response.getBody().getProperties();
+    assertThat(properties.get(0).getValue(), is("Java(TM) 2 Runtime Environment, Standard Edition"));
+    assertThat(properties.get(0).getName(), is("java.runtime.name"));
+    assertThat(properties.get(54).getValue(), is("pentium_pro+mmx pentium_pro pentium+mmx pentium i486 i386 i86"));
+    assertThat(properties.get(54).getName(), is("sun.cpu.isalist"));
+    List<TestCase> testCases = response.getBody().getTestCases();
+    assertThat(testCases.get(0).getTime().toString(), is("0.01"));
+    assertThat(testCases.get(0).getName(), is("testX"));
+    assertThat(testCases.get(1).getTime().toString(), is("0"));
+    assertThat(testCases.get(1).getName(), is("testY"));
+    assertThat(testCases.get(2).getTime().toString(), is("0"));
+    assertThat(testCases.get(2).getName(), is("testXY"));
+    assertThat(testCases.get(3).getTime().toString(), is("0.01"));
+    assertThat(testCases.get(3).getName(), is("testRadius"));
+    assertThat(testCases.get(3).getFailure().getMessage(), is("expected:<20> but was:<10>"));
+    assertThat(testCases.get(3).getFailure().getContent(), equalToIgnoringWhiteSpace("junit.framework.AssertionFailedError: expected:<20> but was:<10>\n      at junit.framework.Assert.fail(Assert.java:47)\n      at junit.framework.Assert.failNotEquals(Assert.java:282)\n      at junit.framework.Assert.assertEquals(Assert.java:64)\n      at junit.framework.Assert.assertEquals(Assert.java:201)\n      at junit.framework.Assert.assertEquals(Assert.java:207)\n      at com.shape.CircleTest.testRadius(CircleTest.java:34)\n      at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n      at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)\n      at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)\n      at java.lang.reflect.Method.invoke(Method.java:585)\n      at junit.framework.TestCase.runTest(TestCase.java:154)\n      at junit.framework.TestCase.runBare(TestCase.java:127)\n      at junit.framework.TestResult$1.protect(TestResult.java:106)\n      at junit.framework.TestResult.runProtected(TestResult.java:124)\n      at junit.framework.TestResult.run(TestResult.java:109)\n      at junit.framework.TestCase.run(TestCase.java:118)\n      at junit.framework.TestSuite.runTest(TestSuite.java:208)\n      at junit.framework.TestSuite.run(TestSuite.java:203)\n      at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n      at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)\n      at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)\n      at java.lang.reflect.Method.invoke(Method.java:585)\n      at org.codehaus.surefire.battery.JUnitBattery.executeJUnit(JUnitBattery.java:246)\n      at org.codehaus.surefire.battery.JUnitBattery.execute(JUnitBattery.java:220)\n      at org.codehaus.surefire.Surefire.executeBattery(Surefire.java:203)\n      at org.codehaus.surefire.Surefire.run(Surefire.java:152)\n      at org.codehaus.surefire.Surefire.run(Surefire.java:76)\n      at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n      at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)\n      at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)\n      at java.lang.reflect.Method.invoke(Method.java:585)\n      at org.codehaus.surefire.SurefireBooter.run(SurefireBooter.java:104)\n      at org.apache.maven.test.SurefirePlugin.execute(SurefirePlugin.java:241)\n      at org.apache.maven.plugin.DefaultPluginManager.executeMojo(DefaultPluginManager.java:357)\n      at org.apache.maven.lifecycle.DefaultLifecycleExecutor.executeGoals(DefaultLifecycleExecutor.java:479)\n      at org.apache.maven.lifecycle.DefaultLifecycleExecutor.executeGoalWithLifecycle(DefaultLifecycleExecutor.java:452)\n      at org.apache.maven.lifecycle.DefaultLifecycleExecutor.executeGoal(DefaultLifecycleExecutor.java:438)\n      at org.apache.maven.lifecycle.DefaultLifecycleExecutor.executeTaskSegments(DefaultLifecycleExecutor.java:273)\n      at org.apache.maven.lifecycle.DefaultLifecycleExecutor.execute(DefaultLifecycleExecutor.java:131)\n      at org.apache.maven.DefaultMaven.execute(DefaultMaven.java:186)\n      at org.apache.maven.cli.MavenCli.main(MavenCli.java:316)\n      at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n      at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)\n      at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)\n      at java.lang.reflect.Method.invoke(Method.java:585)\n      at org.codehaus.classworlds.Launcher.launchEnhanced(Launcher.java:315)\n      at org.codehaus.classworlds.Launcher.launch(Launcher.java:255)\n      at org.codehaus.classworlds.Launcher.mainWithExitCode(Launcher.java:430)\n      at org.codehaus.classworlds.Launcher.main(Launcher.java:375)".replaceAll("\n", "")));
+    assertThat(testCases.get(3).getSystemOut(), equalToIgnoringWhiteSpace("[OUT] : Getting the diameter"));
+    assertThat(testCases.get(3).getSystemErr(), equalToIgnoringWhiteSpace("[ERR] : Getting the Circumference"));
+    assertThat(testCases.get(4).getTime().toString(), is("0.02"));
+    assertThat(testCases.get(4).getName(), is("testProperties"));
+    assertThat(testCases.get(4).getError().getMessage(), is("/ by zero"));
+    assertThat(testCases.get(4).getError().getContent(), equalToIgnoringWhiteSpace("java.lang.ArithmeticException: / by zero\n      at com.shape.CircleTest.testProperties(CircleTest.java:44)\n      at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n      at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)\n      at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)\n      at java.lang.reflect.Method.invoke(Method.java:585)\n      at junit.framework.TestCase.runTest(TestCase.java:154)\n      at junit.framework.TestCase.runBare(TestCase.java:127)\n      at junit.framework.TestResult$1.protect(TestResult.java:106)\n      at junit.framework.TestResult.runProtected(TestResult.java:124)\n      at junit.framework.TestResult.run(TestResult.java:109)\n      at junit.framework.TestCase.run(TestCase.java:118)\n      at junit.framework.TestSuite.runTest(TestSuite.java:208)\n      at junit.framework.TestSuite.run(TestSuite.java:203)\n      at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n      at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)\n      at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)\n      at java.lang.reflect.Method.invoke(Method.java:585)\n      at org.codehaus.surefire.battery.JUnitBattery.executeJUnit(JUnitBattery.java:246)\n      at org.codehaus.surefire.battery.JUnitBattery.execute(JUnitBattery.java:220)\n      at org.codehaus.surefire.Surefire.executeBattery(Surefire.java:203)\n      at org.codehaus.surefire.Surefire.run(Surefire.java:152)\n      at org.codehaus.surefire.Surefire.run(Surefire.java:76)\n      at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n      at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)\n      at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)\n      at java.lang.reflect.Method.invoke(Method.java:585)\n      at org.codehaus.surefire.SurefireBooter.run(SurefireBooter.java:104)\n      at org.apache.maven.test.SurefirePlugin.execute(SurefirePlugin.java:241)\n      at org.apache.maven.plugin.DefaultPluginManager.executeMojo(DefaultPluginManager.java:357)\n      at org.apache.maven.lifecycle.DefaultLifecycleExecutor.executeGoals(DefaultLifecycleExecutor.java:479)\n      at org.apache.maven.lifecycle.DefaultLifecycleExecutor.executeGoalWithLifecycle(DefaultLifecycleExecutor.java:452)\n      at org.apache.maven.lifecycle.DefaultLifecycleExecutor.executeGoal(DefaultLifecycleExecutor.java:438)\n      at org.apache.maven.lifecycle.DefaultLifecycleExecutor.executeTaskSegments(DefaultLifecycleExecutor.java:273)\n      at org.apache.maven.lifecycle.DefaultLifecycleExecutor.execute(DefaultLifecycleExecutor.java:131)\n      at org.apache.maven.DefaultMaven.execute(DefaultMaven.java:186)\n      at org.apache.maven.cli.MavenCli.main(MavenCli.java:316)\n      at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n      at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)\n      at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)\n      at java.lang.reflect.Method.invoke(Method.java:585)\n      at org.codehaus.classworlds.Launcher.launchEnhanced(Launcher.java:315)\n      at org.codehaus.classworlds.Launcher.launch(Launcher.java:255)\n      at org.codehaus.classworlds.Launcher.mainWithExitCode(Launcher.java:430)\n      at org.codehaus.classworlds.Launcher.main(Launcher.java:375)".replaceAll("\n", "")));
+    assertThat(testCases.get(4).getSystemOut(), equalToIgnoringWhiteSpace("[OUT] : Getting the diameter"));
+    assertThat(testCases.get(4).getSystemErr(), equalToIgnoringWhiteSpace("[ERR] : Getting the Circumference"));
+    assertThat(testCases.get(5).getTime().toString(), is("0"));
+    assertThat(testCases.get(5).getName(), is("testPI"));
+    assertThat(testCases.get(6).getTime().toString(), is("0.01"));
+    assertThat(testCases.get(6).getName(), is("testCircumference"));
+    assertThat(testCases.get(7).getTime().toString(), is("0"));
+    assertThat(testCases.get(7).getName(), is("testDiameter"));
   }
 
   @Test
@@ -223,37 +246,35 @@ public class TestRexApplicationTests {
     assertThat(response.getBody().getFailures(), is(1));
     assertThat(response.getBody().getName(), is("com.shape.CircleTest"));
     List<Property> properties = response.getBody().getProperties();
-      assertThat(properties.get(0).getValue(), is("Java(TM) 2 Runtime Environment, Standard Edition"));
-      assertThat(properties.get(0).getName(), is("java.runtime.name"));
-      assertThat(properties.get(54).getValue(), is("pentium_pro+mmx pentium_pro pentium+mmx pentium i486 i386 i86"));
-      assertThat(properties.get(54).getName(), is("sun.cpu.isalist"));
-      List<TestCase> testCases = response.getBody().getTestCases();
-      assertThat(testCases.get(0).getTime().toString(), is("0.01"));
-      assertThat(testCases.get(0).getName(), is("testX"));
-      assertThat(testCases.get(1).getTime().toString(), is("0"));
-      assertThat(testCases.get(1).getName(), is("testY"));
-      assertThat(testCases.get(2).getTime().toString(), is("0"));
-      assertThat(testCases.get(2).getName(), is("testXY"));
-      assertThat(testCases.get(3).getTime().toString(), is("0.01"));
-      assertThat(testCases.get(3).getName(), is("testRadius"));
-      assertThat(testCases.get(3).getFailure().getMessage(), is("expected:<20> but was:<10>"));
-      assertThat(testCases.get(3).getFailure().getContent(), is("junit.framework.AssertionFailedError: expected:<20> but was:<10>\n      at junit.framework.Assert.fail(Assert.java:47)\n      at junit.framework.Assert.failNotEquals(Assert.java:282)\n      at junit.framework.Assert.assertEquals(Assert.java:64)\n      at junit.framework.Assert.assertEquals(Assert.java:201)\n      at junit.framework.Assert.assertEquals(Assert.java:207)\n      at com.shape.CircleTest.testRadius(CircleTest.java:34)\n      at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n      at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)\n      at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)\n      at java.lang.reflect.Method.invoke(Method.java:585)\n      at junit.framework.TestCase.runTest(TestCase.java:154)\n      at junit.framework.TestCase.runBare(TestCase.java:127)\n      at junit.framework.TestResult$1.protect(TestResult.java:106)\n      at junit.framework.TestResult.runProtected(TestResult.java:124)\n      at junit.framework.TestResult.run(TestResult.java:109)\n      at junit.framework.TestCase.run(TestCase.java:118)\n      at junit.framework.TestSuite.runTest(TestSuite.java:208)\n      at junit.framework.TestSuite.run(TestSuite.java:203)\n      at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n      at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)\n      at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)\n      at java.lang.reflect.Method.invoke(Method.java:585)\n      at org.codehaus.surefire.battery.JUnitBattery.executeJUnit(JUnitBattery.java:246)\n      at org.codehaus.surefire.battery.JUnitBattery.execute(JUnitBattery.java:220)\n      at org.codehaus.surefire.Surefire.executeBattery(Surefire.java:203)\n      at org.codehaus.surefire.Surefire.run(Surefire.java:152)\n      at org.codehaus.surefire.Surefire.run(Surefire.java:76)\n      at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n      at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)\n      at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)\n      at java.lang.reflect.Method.invoke(Method.java:585)\n      at org.codehaus.surefire.SurefireBooter.run(SurefireBooter.java:104)\n      at org.apache.maven.test.SurefirePlugin.execute(SurefirePlugin.java:241)\n      at org.apache.maven.plugin.DefaultPluginManager.executeMojo(DefaultPluginManager.java:357)\n      at org.apache.maven.lifecycle.DefaultLifecycleExecutor.executeGoals(DefaultLifecycleExecutor.java:479)\n      at org.apache.maven.lifecycle.DefaultLifecycleExecutor.executeGoalWithLifecycle(DefaultLifecycleExecutor.java:452)\n      at org.apache.maven.lifecycle.DefaultLifecycleExecutor.executeGoal(DefaultLifecycleExecutor.java:438)\n      at org.apache.maven.lifecycle.DefaultLifecycleExecutor.executeTaskSegments(DefaultLifecycleExecutor.java:273)\n      at org.apache.maven.lifecycle.DefaultLifecycleExecutor.execute(DefaultLifecycleExecutor.java:131)\n      at org.apache.maven.DefaultMaven.execute(DefaultMaven.java:186)\n      at org.apache.maven.cli.MavenCli.main(MavenCli.java:316)\n      at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n      at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)\n      at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)\n      at java.lang.reflect.Method.invoke(Method.java:585)\n      at org.codehaus.classworlds.Launcher.launchEnhanced(Launcher.java:315)\n      at org.codehaus.classworlds.Launcher.launch(Launcher.java:255)\n      at org.codehaus.classworlds.Launcher.mainWithExitCode(Launcher.java:430)\n      at org.codehaus.classworlds.Launcher.main(Launcher.java:375)"));
-      assertThat(testCases.get(3).getSystemOut(), is("[OUT] : Getting the diameter"));
-      assertThat(testCases.get(3).getSystemErr(), is("[ERR] : Getting the Circumference"));
-      assertThat(testCases.get(4).getTime().toString(), is("0.02"));
-      assertThat(testCases.get(4).getName(), is("testProperties"));
-      assertThat(testCases.get(4).getError().getMessage(), is("/ by zero"));
-      assertThat(testCases.get(4).getError().getContent(), is("java.lang.ArithmeticException: / by zero\n      at com.shape.CircleTest.testProperties(CircleTest.java:44)\n      at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n      at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)\n      at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)\n      at java.lang.reflect.Method.invoke(Method.java:585)\n      at junit.framework.TestCase.runTest(TestCase.java:154)\n      at junit.framework.TestCase.runBare(TestCase.java:127)\n      at junit.framework.TestResult$1.protect(TestResult.java:106)\n      at junit.framework.TestResult.runProtected(TestResult.java:124)\n      at junit.framework.TestResult.run(TestResult.java:109)\n      at junit.framework.TestCase.run(TestCase.java:118)\n      at junit.framework.TestSuite.runTest(TestSuite.java:208)\n      at junit.framework.TestSuite.run(TestSuite.java:203)\n      at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n      at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)\n      at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)\n      at java.lang.reflect.Method.invoke(Method.java:585)\n      at org.codehaus.surefire.battery.JUnitBattery.executeJUnit(JUnitBattery.java:246)\n      at org.codehaus.surefire.battery.JUnitBattery.execute(JUnitBattery.java:220)\n      at org.codehaus.surefire.Surefire.executeBattery(Surefire.java:203)\n      at org.codehaus.surefire.Surefire.run(Surefire.java:152)\n      at org.codehaus.surefire.Surefire.run(Surefire.java:76)\n      at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n      at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)\n      at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)\n      at java.lang.reflect.Method.invoke(Method.java:585)\n      at org.codehaus.surefire.SurefireBooter.run(SurefireBooter.java:104)\n      at org.apache.maven.test.SurefirePlugin.execute(SurefirePlugin.java:241)\n      at org.apache.maven.plugin.DefaultPluginManager.executeMojo(DefaultPluginManager.java:357)\n      at org.apache.maven.lifecycle.DefaultLifecycleExecutor.executeGoals(DefaultLifecycleExecutor.java:479)\n      at org.apache.maven.lifecycle.DefaultLifecycleExecutor.executeGoalWithLifecycle(DefaultLifecycleExecutor.java:452)\n      at org.apache.maven.lifecycle.DefaultLifecycleExecutor.executeGoal(DefaultLifecycleExecutor.java:438)\n      at org.apache.maven.lifecycle.DefaultLifecycleExecutor.executeTaskSegments(DefaultLifecycleExecutor.java:273)\n      at org.apache.maven.lifecycle.DefaultLifecycleExecutor.execute(DefaultLifecycleExecutor.java:131)\n      at org.apache.maven.DefaultMaven.execute(DefaultMaven.java:186)\n      at org.apache.maven.cli.MavenCli.main(MavenCli.java:316)\n      at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n      at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)\n      at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)\n      at java.lang.reflect.Method.invoke(Method.java:585)\n      at org.codehaus.classworlds.Launcher.launchEnhanced(Launcher.java:315)\n      at org.codehaus.classworlds.Launcher.launch(Launcher.java:255)\n      at org.codehaus.classworlds.Launcher.mainWithExitCode(Launcher.java:430)\n      at org.codehaus.classworlds.Launcher.main(Launcher.java:375)"));
-      assertThat(testCases.get(4).getSystemOut(), equalToIgnoringWhiteSpace("[OUT] : Getting the diameter"));
-      assertThat(testCases.get(4).getSystemErr(), equalToIgnoringWhiteSpace("[ERR] : Getting the Circumference"));
-      assertThat(testCases.get(5).getTime().toString(), is("0"));
-      assertThat(testCases.get(5).getName(), is("testPI"));
-      assertThat(testCases.get(6).getTime().toString(), is("0.01"));
-      assertThat(testCases.get(6).getName(), is("testCircumference"));
-      assertThat(testCases.get(7).getTime().toString(), is("0"));
-      assertThat(testCases.get(7).getName(), is("testDiameter"));
-
-
+    assertThat(properties.get(0).getValue(), is("Java(TM) 2 Runtime Environment, Standard Edition"));
+    assertThat(properties.get(0).getName(), is("java.runtime.name"));
+    assertThat(properties.get(54).getValue(), is("pentium_pro+mmx pentium_pro pentium+mmx pentium i486 i386 i86"));
+    assertThat(properties.get(54).getName(), is("sun.cpu.isalist"));
+    List<TestCase> testCases = response.getBody().getTestCases();
+    assertThat(testCases.get(0).getTime().toString(), is("0.01"));
+    assertThat(testCases.get(0).getName(), is("testX"));
+    assertThat(testCases.get(1).getTime().toString(), is("0"));
+    assertThat(testCases.get(1).getName(), is("testY"));
+    assertThat(testCases.get(2).getTime().toString(), is("0"));
+    assertThat(testCases.get(2).getName(), is("testXY"));
+    assertThat(testCases.get(3).getTime().toString(), is("0.01"));
+    assertThat(testCases.get(3).getName(), is("testRadius"));
+    assertThat(testCases.get(3).getFailure().getMessage(), is("expected:<20> but was:<10>"));
+    assertThat(testCases.get(3).getFailure().getContent(), is("junit.framework.AssertionFailedError: expected:<20> but was:<10>\n      at junit.framework.Assert.fail(Assert.java:47)\n      at junit.framework.Assert.failNotEquals(Assert.java:282)\n      at junit.framework.Assert.assertEquals(Assert.java:64)\n      at junit.framework.Assert.assertEquals(Assert.java:201)\n      at junit.framework.Assert.assertEquals(Assert.java:207)\n      at com.shape.CircleTest.testRadius(CircleTest.java:34)\n      at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n      at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)\n      at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)\n      at java.lang.reflect.Method.invoke(Method.java:585)\n      at junit.framework.TestCase.runTest(TestCase.java:154)\n      at junit.framework.TestCase.runBare(TestCase.java:127)\n      at junit.framework.TestResult$1.protect(TestResult.java:106)\n      at junit.framework.TestResult.runProtected(TestResult.java:124)\n      at junit.framework.TestResult.run(TestResult.java:109)\n      at junit.framework.TestCase.run(TestCase.java:118)\n      at junit.framework.TestSuite.runTest(TestSuite.java:208)\n      at junit.framework.TestSuite.run(TestSuite.java:203)\n      at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n      at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)\n      at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)\n      at java.lang.reflect.Method.invoke(Method.java:585)\n      at org.codehaus.surefire.battery.JUnitBattery.executeJUnit(JUnitBattery.java:246)\n      at org.codehaus.surefire.battery.JUnitBattery.execute(JUnitBattery.java:220)\n      at org.codehaus.surefire.Surefire.executeBattery(Surefire.java:203)\n      at org.codehaus.surefire.Surefire.run(Surefire.java:152)\n      at org.codehaus.surefire.Surefire.run(Surefire.java:76)\n      at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n      at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)\n      at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)\n      at java.lang.reflect.Method.invoke(Method.java:585)\n      at org.codehaus.surefire.SurefireBooter.run(SurefireBooter.java:104)\n      at org.apache.maven.test.SurefirePlugin.execute(SurefirePlugin.java:241)\n      at org.apache.maven.plugin.DefaultPluginManager.executeMojo(DefaultPluginManager.java:357)\n      at org.apache.maven.lifecycle.DefaultLifecycleExecutor.executeGoals(DefaultLifecycleExecutor.java:479)\n      at org.apache.maven.lifecycle.DefaultLifecycleExecutor.executeGoalWithLifecycle(DefaultLifecycleExecutor.java:452)\n      at org.apache.maven.lifecycle.DefaultLifecycleExecutor.executeGoal(DefaultLifecycleExecutor.java:438)\n      at org.apache.maven.lifecycle.DefaultLifecycleExecutor.executeTaskSegments(DefaultLifecycleExecutor.java:273)\n      at org.apache.maven.lifecycle.DefaultLifecycleExecutor.execute(DefaultLifecycleExecutor.java:131)\n      at org.apache.maven.DefaultMaven.execute(DefaultMaven.java:186)\n      at org.apache.maven.cli.MavenCli.main(MavenCli.java:316)\n      at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n      at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)\n      at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)\n      at java.lang.reflect.Method.invoke(Method.java:585)\n      at org.codehaus.classworlds.Launcher.launchEnhanced(Launcher.java:315)\n      at org.codehaus.classworlds.Launcher.launch(Launcher.java:255)\n      at org.codehaus.classworlds.Launcher.mainWithExitCode(Launcher.java:430)\n      at org.codehaus.classworlds.Launcher.main(Launcher.java:375)"));
+    assertThat(testCases.get(3).getSystemOut(), is("[OUT] : Getting the diameter"));
+    assertThat(testCases.get(3).getSystemErr(), is("[ERR] : Getting the Circumference"));
+    assertThat(testCases.get(4).getTime().toString(), is("0.02"));
+    assertThat(testCases.get(4).getName(), is("testProperties"));
+    assertThat(testCases.get(4).getError().getMessage(), is("/ by zero"));
+    assertThat(testCases.get(4).getError().getContent(), is("java.lang.ArithmeticException: / by zero\n      at com.shape.CircleTest.testProperties(CircleTest.java:44)\n      at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n      at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)\n      at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)\n      at java.lang.reflect.Method.invoke(Method.java:585)\n      at junit.framework.TestCase.runTest(TestCase.java:154)\n      at junit.framework.TestCase.runBare(TestCase.java:127)\n      at junit.framework.TestResult$1.protect(TestResult.java:106)\n      at junit.framework.TestResult.runProtected(TestResult.java:124)\n      at junit.framework.TestResult.run(TestResult.java:109)\n      at junit.framework.TestCase.run(TestCase.java:118)\n      at junit.framework.TestSuite.runTest(TestSuite.java:208)\n      at junit.framework.TestSuite.run(TestSuite.java:203)\n      at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n      at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)\n      at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)\n      at java.lang.reflect.Method.invoke(Method.java:585)\n      at org.codehaus.surefire.battery.JUnitBattery.executeJUnit(JUnitBattery.java:246)\n      at org.codehaus.surefire.battery.JUnitBattery.execute(JUnitBattery.java:220)\n      at org.codehaus.surefire.Surefire.executeBattery(Surefire.java:203)\n      at org.codehaus.surefire.Surefire.run(Surefire.java:152)\n      at org.codehaus.surefire.Surefire.run(Surefire.java:76)\n      at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n      at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)\n      at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)\n      at java.lang.reflect.Method.invoke(Method.java:585)\n      at org.codehaus.surefire.SurefireBooter.run(SurefireBooter.java:104)\n      at org.apache.maven.test.SurefirePlugin.execute(SurefirePlugin.java:241)\n      at org.apache.maven.plugin.DefaultPluginManager.executeMojo(DefaultPluginManager.java:357)\n      at org.apache.maven.lifecycle.DefaultLifecycleExecutor.executeGoals(DefaultLifecycleExecutor.java:479)\n      at org.apache.maven.lifecycle.DefaultLifecycleExecutor.executeGoalWithLifecycle(DefaultLifecycleExecutor.java:452)\n      at org.apache.maven.lifecycle.DefaultLifecycleExecutor.executeGoal(DefaultLifecycleExecutor.java:438)\n      at org.apache.maven.lifecycle.DefaultLifecycleExecutor.executeTaskSegments(DefaultLifecycleExecutor.java:273)\n      at org.apache.maven.lifecycle.DefaultLifecycleExecutor.execute(DefaultLifecycleExecutor.java:131)\n      at org.apache.maven.DefaultMaven.execute(DefaultMaven.java:186)\n      at org.apache.maven.cli.MavenCli.main(MavenCli.java:316)\n      at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n      at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)\n      at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)\n      at java.lang.reflect.Method.invoke(Method.java:585)\n      at org.codehaus.classworlds.Launcher.launchEnhanced(Launcher.java:315)\n      at org.codehaus.classworlds.Launcher.launch(Launcher.java:255)\n      at org.codehaus.classworlds.Launcher.mainWithExitCode(Launcher.java:430)\n      at org.codehaus.classworlds.Launcher.main(Launcher.java:375)"));
+    assertThat(testCases.get(4).getSystemOut(), equalToIgnoringWhiteSpace("[OUT] : Getting the diameter"));
+    assertThat(testCases.get(4).getSystemErr(), equalToIgnoringWhiteSpace("[ERR] : Getting the Circumference"));
+    assertThat(testCases.get(5).getTime().toString(), is("0"));
+    assertThat(testCases.get(5).getName(), is("testPI"));
+    assertThat(testCases.get(6).getTime().toString(), is("0.01"));
+    assertThat(testCases.get(6).getName(), is("testCircumference"));
+    assertThat(testCases.get(7).getTime().toString(), is("0"));
+    assertThat(testCases.get(7).getName(), is("testDiameter"));
   }
 
   @Test
@@ -337,10 +358,10 @@ public class TestRexApplicationTests {
     assertThat(response.getBody().getFailures(), is(3));
     assertThat(response.getBody().getName(), is("NoPackageTest"));
     List<Property> properties = response.getBody().getProperties();
-      assertThat(properties.get(0).getValue(), is("Java(TM) 2 Runtime Environment, Standard Edition"));
-      assertThat(properties.get(0).getName(), is("java.runtime.name"));
-      assertThat(properties.get(55).getValue(), is("pentium_pro+mmx pentium_pro pentium+mmx pentium i486 i386 i86"));
-      assertThat(properties.get(55).getName(), is("sun.cpu.isalist"));
+    assertThat(properties.get(0).getValue(), is("Java(TM) 2 Runtime Environment, Standard Edition"));
+    assertThat(properties.get(0).getName(), is("java.runtime.name"));
+    assertThat(properties.get(55).getValue(), is("pentium_pro+mmx pentium_pro pentium+mmx pentium i486 i386 i86"));
+    assertThat(properties.get(55).getName(), is("sun.cpu.isalist"));
     List<TestCase> testCases = response.getBody().getTestCases();
     assertThat(testCases.get(0).getTime().toString(), is("0"));
     assertThat(testCases.get(0).getName(), is("testQuote"));
@@ -405,7 +426,7 @@ public class TestRexApplicationTests {
   }
 
   private String getUrl() {
-    return "http://localhost:" + this.port + "testsuites/";
+    return "http://localhost:" + this.port + "/projects/" + projectId + "/testsuites/";
   }
 
 }
