@@ -1,6 +1,8 @@
 package io.testrex.controller;
 
+import io.testrex.model.Project;
 import io.testrex.model.TestSuite;
+import io.testrex.repository.ProjectRepository;
 import io.testrex.repository.TestSuiteRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,53 +24,77 @@ import java.util.stream.Collectors;
 
 
 @RestController
-@RequestMapping(value = "/testsuites")
+@RequestMapping(path = "/projects/{projectId}/testsuites")
 public class TestSuiteController {
   private final TestSuiteRepository testSuiteRepository;
+  private final ProjectRepository projectRepository;
 
-  public TestSuiteController(TestSuiteRepository testSuiteRepository) {
+  public TestSuiteController(TestSuiteRepository testSuiteRepository, ProjectRepository projectRepository) {
     this.testSuiteRepository = testSuiteRepository;
+    this.projectRepository = projectRepository;
   }
 
   Logger LOG = LoggerFactory.getLogger(TestSuiteController.class);
 
   @GetMapping(path = "/{id}", produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
-  public ResponseEntity<TestSuite>findById(@PathVariable Long id) {
-   return testSuiteRepository.findById(id).map(testSuite1 -> ResponseEntity.ok(testSuite1)).orElse(ResponseEntity.notFound().build());
-  }
+  public ResponseEntity<TestSuite>findById(@PathVariable Long id, @PathVariable Long projectId) {
+
+      TestSuite testSuite = testSuiteRepository.findTestSuiteByIdAndProjectProjectId(id, projectId);
+      if (testSuite == null) return ResponseEntity.notFound().build();
+      else return ResponseEntity.ok(testSuite);
+
+     }
 
   @GetMapping(path = "/", produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
-  public List<ResponseEntity<TestSuite>> findAll() {
-    List<ResponseEntity<TestSuite>> resources = testSuiteRepository.findAll().stream()
-            .map(testSuite -> ResponseEntity.ok(testSuite)).collect(Collectors.toList());
-    return resources;
+  public List<ResponseEntity<TestSuite>> findAll(@PathVariable Long projectId) {
+      List<ResponseEntity<TestSuite>> resources = testSuiteRepository.findTestSuitesByProjectProjectId(projectId)
+              .stream().map(testSuite -> ResponseEntity.ok(testSuite)).collect(Collectors.toList());
+        return resources;
   }
 
   @PostMapping(consumes = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
-  public ResponseEntity<TestSuite> create(@RequestBody TestSuite testSuite) {
+  public ResponseEntity<TestSuite> create(@RequestBody TestSuite testSuite, @PathVariable Long projectId) {
     LOG.info("Creating TestSuite: ", testSuite.toString());
-    TestSuite ts = testSuiteRepository.save(testSuite);
-    URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(ts.getId()).toUri();
-    return ResponseEntity.created(location).body(ts);
+    Project pr = projectRepository.findById(projectId).get();
+    if (pr != null) {
+        testSuite.setProject(pr);
+        TestSuite ts = testSuiteRepository.save(testSuite);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(ts.getId()).toUri();
+        return ResponseEntity.created(location).body(ts);
+    } else {
+        return ResponseEntity.notFound().build();
+    }
+
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<?> delete(@PathVariable Long id) {
-    LOG.info("Deleting TestSuite with id: " + id);
-    testSuiteRepository.deleteById(id);
-    return ResponseEntity.noContent().build();
+  public ResponseEntity<?> delete(@PathVariable Long id, @PathVariable Long projectId) {
+
+      TestSuite testSuite = testSuiteRepository.findTestSuiteByIdAndProjectProjectId(id, projectId);
+      if (testSuite != null) {
+      testSuiteRepository.delete(testSuite);
+      return ResponseEntity.ok().location(ServletUriComponentsBuilder.fromCurrentRequest().build().toUri()).build();
+      } else {
+          return ResponseEntity.notFound().location(ServletUriComponentsBuilder.fromCurrentRequest().buildAndExpand().toUri()).build();
+      }
   }
 
   @PutMapping(path = "/{id}", consumes = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
-  public ResponseEntity<TestSuite> put(@PathVariable Long id, @RequestBody TestSuite newTestSuite) {
+  public ResponseEntity<TestSuite> put(@PathVariable Long id, @RequestBody TestSuite newTestSuite, @PathVariable Long projectId) {
     URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(id).toUri();
-    TestSuite requested = testSuiteRepository.findById(id).get();
+    TestSuite requested = testSuiteRepository.findTestSuiteByIdAndProjectProjectId(id, projectId);
     if (requested != null) {
       newTestSuite.setId(id);
-      LOG.info("Replacing TestCase on id: " + id);
-      return ResponseEntity.created(location).body(testSuiteRepository.save(newTestSuite));
+      Project pr = projectRepository.findById(projectId).get();
+      if (pr != null) {
+          newTestSuite.setProject(pr);
+          LOG.info("Replacing TestCase on id: " + id);
+          return ResponseEntity.created(location).body(testSuiteRepository.save(newTestSuite));
+      } else {
+          return ResponseEntity.notFound().build();
+      }
     } else {
-      return ResponseEntity.badRequest().build();
+      return ResponseEntity.notFound().build();
     }
   }
 }
