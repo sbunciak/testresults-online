@@ -23,7 +23,8 @@ hs_err_pid*
 .springBeans
 
 #IDEA
-.iml
+*.iml
+.idea/
 
 # Maven
 target/
