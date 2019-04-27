@@ -54,17 +54,15 @@ public class TestSuiteController {
 
   @PostMapping(consumes = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
   public ResponseEntity<TestSuite> create(@RequestBody TestSuite testSuite, @PathVariable Long projectId) {
-    LOG.info("Creating TestSuite: ", testSuite.toString());
+    LOG.info("Creating TestSuite: {}", testSuite.toString());
+    if (!projectRepository.findById(projectId).isPresent()) {
+        return ResponseEntity.notFound().build();
+    }
     Project pr = projectRepository.findById(projectId).get();
-    if (pr != null) {
         testSuite.setProject(pr);
         TestSuite ts = testSuiteRepository.save(testSuite);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(ts.getId()).toUri();
         return ResponseEntity.created(location).body(ts);
-    } else {
-        return ResponseEntity.notFound().build();
-    }
-
   }
 
   @DeleteMapping("/{id}")
